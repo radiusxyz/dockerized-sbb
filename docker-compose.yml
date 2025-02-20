@@ -11,7 +11,7 @@ services:
       SEEDER_EXTERNAL_RPC_URL: "http://127.0.0.1:6000"
       SEEDER_INTERNAL_RPC_URL: "http://127.0.0.1:6001"
 
-      # Seeder RPC-Call Environment Variables
+      # Seeder RPC Environment Variables
       LIVENESS_PLATFORM: "ethereum"
       LIVENESS_SERVICE_PROVIDER: "radius"
       LIVENESS_RPC_URL: "http://127.0.0.1:8545"
@@ -37,11 +37,14 @@ services:
       dockerfile: key_generator.Dockerfile
     container_name: key_generator
     environment:
-      # DKG Execution Environment Variables
+      # DKG Execution and RPC Environment Variables
       KEY_GENERATOR_INTERNAL_RPC_URL: "http://127.0.0.1:7200"
       KEY_GENERATOR_CLUSTER_RPC_URL: "http://127.0.0.1:7300"
       KEY_GENERATOR_EXTERNAL_RPC_URL: "http://127.0.0.1:7100"
       KEY_GENERATOR_ADDRESS: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+
+      # DKG Execution Environment Variables
+      KEY_GENERATOR_PRIVATE_KEY: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
     depends_on:
       - seeder
     ports:
