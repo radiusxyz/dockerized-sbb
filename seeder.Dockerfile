@@ -2,13 +2,13 @@ FROM rust:1.75 as builder
 
 WORKDIR /app
 
-# Install dependencies
-RUN apt-get update && apt-get install -y git clang llvm-dev libclang-dev cmake pkg-config build-essential libssl-dev curl
-
 # Clone the repository
 RUN git clone https://github.com/radiusxyz/seeder
 
 WORKDIR /app/seeder
+
+# Install dependencies
+RUN apt-get update && apt-get install -y git clang llvm-dev libclang-dev cmake pkg-config build-essential libssl-dev
 
 # Build the binary
 RUN cargo build --release
@@ -18,14 +18,19 @@ FROM ubuntu:22.04
 
 WORKDIR /app/seeder
 
-# Copy built binary to the correct location
+# Install dependencies
+RUN apt-get update && apt-get install -y curl
+
+# Copy built binary to both scripts and target/release locations
 COPY --from=builder /app/seeder/target/release/seeder /app/seeder/scripts/seeder
+COPY --from=builder /app/seeder/target/release/seeder /app/seeder/target/release/seeder
 
 # Copy scripts
 COPY --from=builder /app/seeder/scripts /app/seeder/scripts
 
 # Ensure binary and scripts are executable
 RUN chmod +x /app/seeder/scripts/seeder
+RUN chmod +x /app/seeder/target/release/seeder
 RUN chmod +x /app/seeder/scripts/execute/*.sh /app/seeder/scripts/rpc-call/*.sh
 
 # ✅ Create env.sh from env_example.sh and update values

@@ -2,13 +2,13 @@ FROM rust:1.75 as builder
 
 WORKDIR /app
 
-# Install dependencies
-RUN apt-get update && apt-get install -y git clang llvm-dev libclang-dev cmake pkg-config build-essential libssl-dev curl
-
 # Clone the repository
 RUN git clone https://github.com/radiusxyz/distributed_key_generation
 
 WORKDIR /app/distributed_key_generation
+
+# Install dependencies
+RUN apt-get update && apt-get install -y git clang llvm-dev libclang-dev cmake pkg-config build-essential libssl-dev
 
 # Build the binary
 RUN cargo build --release
@@ -18,14 +18,19 @@ FROM ubuntu:22.04
 
 WORKDIR /app/distributed_key_generation
 
-# Copy built binary to the correct location
+# Install dependencies
+RUN apt-get update && apt-get install -y curl
+
+# Copy built binary to both scripts and target/release locations
 COPY --from=builder /app/distributed_key_generation/target/release/key-generator /app/distributed_key_generation/scripts/key-generator
+COPY --from=builder /app/distributed_key_generation/target/release/key-generator /app/distributed_key_generation/target/release/key-generator
 
 # Copy scripts
 COPY --from=builder /app/distributed_key_generation/scripts /app/distributed_key_generation/scripts
 
 # Ensure binary and scripts are executable
 RUN chmod +x /app/distributed_key_generation/scripts/key-generator
+RUN chmod +x /app/distributed_key_generation/target/release/key-generator
 RUN chmod +x /app/distributed_key_generation/scripts/execute/*.sh /app/distributed_key_generation/scripts/rpc-call/*.sh
 
 # ✅ Create env.sh from env_example.sh and update values
