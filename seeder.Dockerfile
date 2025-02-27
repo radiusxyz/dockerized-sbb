@@ -3,7 +3,7 @@ FROM rust:1.75 as builder
 WORKDIR /app
 
 # Clone the repository
-RUN git clone https://github.com/radiusxyz/seeder
+RUN git clone https://github.com/gylman/seeder-gylman && mv seeder-gylman seeder
 
 WORKDIR /app/seeder
 
@@ -46,4 +46,4 @@ RUN cp /app/seeder/scripts/execute/env_example.sh /app/seeder/scripts/execute/en
     sed -i "s|LIVENESS_CONTRACT_ADDRESS=.*|LIVENESS_CONTRACT_ADDRESS=$LIVENESS_CONTRACT_ADDRESS|" /app/seeder/scripts/rpc-call/env.sh
 
 # ✅ Correct CMD syntax
-CMD ["/bin/bash", "-c", "/app/seeder/scripts/execute/01_init_seeder.sh && /app/seeder/scripts/execute/02_run_seeder.sh && /app/seeder/scripts/rpc-call/10_initialize.sh"]
+# CMD ["/bin/bash", "-c", "/app/seeder/scripts/execute/01_init_seeder.sh && /app/seeder/scripts/execute/02_run_seeder.sh && /app/seeder/scripts/rpc-call/10_initialize.sh"]

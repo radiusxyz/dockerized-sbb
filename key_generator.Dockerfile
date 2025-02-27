@@ -3,7 +3,7 @@ FROM rust:1.75 as builder
 WORKDIR /app
 
 # Clone the repository
-RUN git clone https://github.com/radiusxyz/distributed_key_generation
+RUN git clone https://github.com/gylman/distributed_key_generation-gylman && mv distributed_key_generation-gylman distributed_key_generation
 
 WORKDIR /app/distributed_key_generation
 
@@ -46,4 +46,4 @@ RUN cp /app/distributed_key_generation/scripts/execute/env_example.sh /app/distr
     sed -i "s|KEY_GENERATOR_ADDRESS=.*|KEY_GENERATOR_ADDRESS=$KEY_GENERATOR_ADDRESS|" /app/distributed_key_generation/scripts/rpc-call/env.sh
 
 # ✅ Correct CMD syntax
-CMD ["/bin/bash", "-c", "/app/distributed_key_generation/scripts/execute/01_init_key_generator.sh && /app/distributed_key_generation/scripts/execute/02_run_key_generator.sh && /app/distributed_key_generation/scripts/rpc-call/10_initialize.sh"]
+# CMD ["/bin/bash", "-c", "/app/distributed_key_generation/scripts/execute/01_init_key_generator.sh && /app/distributed_key_generation/scripts/execute/02_run_key_generator.sh && /app/distributed_key_generation/scripts/rpc-call/10_initialize.sh"]
