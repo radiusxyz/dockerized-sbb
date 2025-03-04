@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   seeder:
     build:
@@ -7,11 +5,8 @@ services:
       dockerfile: seeder.Dockerfile
     container_name: seeder
     environment:
-      # Seeder Execution Environment Variables
       SEEDER_EXTERNAL_RPC_URL: "http://127.0.0.1:6000"
       SEEDER_INTERNAL_RPC_URL: "http://127.0.0.1:6001"
-
-      # Seeder RPC Environment Variables
       LIVENESS_PLATFORM: "ethereum"
       LIVENESS_SERVICE_PROVIDER: "radius"
       LIVENESS_RPC_URL: "http://127.0.0.1:8545"
@@ -27,37 +22,25 @@ services:
       - "-c"
       - |
         cd /app/seeder
+
+        # ✅ Replace values inside env.sh at runtime
+        sed -i "s|SEEDER_EXTERNAL_RPC_URL=.*|SEEDER_EXTERNAL_RPC_URL=${SEEDER_EXTERNAL_RPC_URL}|" /app/seeder/scripts/execute/env.sh
+        sed -i "s|SEEDER_INTERNAL_RPC_URL=.*|SEEDER_INTERNAL_RPC_URL=${SEEDER_INTERNAL_RPC_URL}|" /app/seeder/scripts/execute/env.sh
+        sed -i "s|SEEDER_INTERNAL_RPC_URL=.*|SEEDER_INTERNAL_RPC_URL=${SEEDER_INTERNAL_RPC_URL}|" /app/seeder/scripts/rpc-call/env.sh
+        sed -i "s|LIVENESS_PLATFORM=.*|LIVENESS_PLATFORM=${LIVENESS_PLATFORM}|" /app/seeder/scripts/rpc-call/env.sh
+        sed -i "s|LIVENESS_SERVICE_PROVIDER=.*|LIVENESS_SERVICE_PROVIDER=${LIVENESS_SERVICE_PROVIDER}|" /app/seeder/scripts/rpc-call/env.sh
+        sed -i "s|LIVENESS_RPC_URL=.*|LIVENESS_RPC_URL=${LIVENESS_RPC_URL}|" /app/seeder/scripts/rpc-call/env.sh
+        sed -i "s|LIVENESS_WS_URL=.*|LIVENESS_WS_URL=${LIVENESS_WS_URL}|" /app/seeder/scripts/rpc-call/env.sh
+        sed -i "s|LIVENESS_CONTRACT_ADDRESS=.*|LIVENESS_CONTRACT_ADDRESS=${LIVENESS_CONTRACT_ADDRESS}|" /app/seeder/scripts/rpc-call/env.sh
+
+        # ✅ Print updated env.sh for debugging
+        echo "Updated env.sh:"
+        cat /app/seeder/scripts/execute/env.sh
+        cat /app/seeder/scripts/rpc-call/env.sh
+
+        # Start scripts
         ./scripts/execute/01_init_seeder.sh
-        ./scripts/execute/02_run_seeder.sh
+        ./scripts/execute/02_run_seeder.sh &
         ./scripts/rpc-call/10_initialize.sh
 
-  key_generator:
-    build:
-      context: .
-      dockerfile: key_generator.Dockerfile
-    container_name: key_generator
-    environment:
-      # DKG Execution and RPC Environment Variables
-      KEY_GENERATOR_INTERNAL_RPC_URL: "http://127.0.0.1:7200"
-      KEY_GENERATOR_CLUSTER_RPC_URL: "http://127.0.0.1:7300"
-      KEY_GENERATOR_EXTERNAL_RPC_URL: "http://127.0.0.1:7100"
-      KEY_GENERATOR_ADDRESS: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
-
-      # DKG Execution Environment Variables
-      KEY_GENERATOR_PRIVATE_KEY: "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
-    depends_on:
-      - seeder
-    ports:
-      - "7100:7100"
-      - "7200:7200"
-      - "7300:7300"
-    volumes:
-      - ../distributed_key_generation/data:/app/distributed_key_generation/data
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        cd /app/distributed_key_generation
-        ./scripts/execute/01_init_key_generator.sh
-        ./scripts/execute/02_run_key_generator.sh
-        ./scripts/rpc-call/10_initialize.sh
+        tail -f /dev/null

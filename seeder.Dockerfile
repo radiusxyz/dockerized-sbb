@@ -29,21 +29,13 @@ COPY --from=builder /app/seeder/target/release/seeder /app/seeder/target/release
 COPY --from=builder /app/seeder/scripts /app/seeder/scripts
 
 # Ensure binary and scripts are executable
-RUN chmod +x /app/seeder/scripts/seeder
-RUN chmod +x /app/seeder/target/release/seeder
-RUN chmod +x /app/seeder/scripts/execute/*.sh /app/seeder/scripts/rpc-call/*.sh
+# RUN chmod +x /app/seeder/scripts/seeder
+# RUN chmod +x /app/seeder/target/release/seeder
+# RUN chmod +x /app/seeder/scripts/execute/*.sh /app/seeder/scripts/rpc-call/*.sh
 
-# ✅ Create env.sh from env_example.sh and update values
-RUN cp /app/seeder/scripts/execute/env_example.sh /app/seeder/scripts/execute/env.sh && \
-    cp /app/seeder/scripts/rpc-call/env_example.sh /app/seeder/scripts/rpc-call/env.sh && \
-    sed -i "s|SEEDER_EXTERNAL_RPC_URL=.*|SEEDER_EXTERNAL_RPC_URL=$SEEDER_EXTERNAL_RPC_URL|" /app/seeder/scripts/execute/env.sh && \
-    sed -i "s|SEEDER_INTERNAL_RPC_URL=.*|SEEDER_INTERNAL_RPC_URL=$SEEDER_INTERNAL_RPC_URL|" /app/seeder/scripts/execute/env.sh && \
-    sed -i "s|SEEDER_INTERNAL_RPC_URL=.*|SEEDER_INTERNAL_RPC_URL=$SEEDER_INTERNAL_RPC_URL|" /app/seeder/scripts/rpc-call/env.sh && \
-    sed -i "s|LIVENESS_PLATFORM=.*|LIVENESS_PLATFORM=$LIVENESS_PLATFORM|" /app/seeder/scripts/rpc-call/env.sh && \
-    sed -i "s|LIVENESS_SERVICE_PROVIDER=.*|LIVENESS_SERVICE_PROVIDER=$LIVENESS_SERVICE_PROVIDER|" /app/seeder/scripts/rpc-call/env.sh && \
-    sed -i "s|LIVENESS_RPC_URL=.*|LIVENESS_RPC_URL=$LIVENESS_RPC_URL|" /app/seeder/scripts/rpc-call/env.sh && \
-    sed -i "s|LIVENESS_WS_URL=.*|LIVENESS_WS_URL=$LIVENESS_WS_URL|" /app/seeder/scripts/rpc-call/env.sh && \
-    sed -i "s|LIVENESS_CONTRACT_ADDRESS=.*|LIVENESS_CONTRACT_ADDRESS=$LIVENESS_CONTRACT_ADDRESS|" /app/seeder/scripts/rpc-call/env.sh
+# ✅ Copy env_example.sh to env.sh, but don't modify it at build time
+RUN cp /app/seeder/scripts/execute/env_example.sh /app/seeder/scripts/execute/env.sh
+RUN cp /app/seeder/scripts/rpc-call/env_example.sh /app/seeder/scripts/rpc-call/env.sh
 
 # ✅ Correct CMD syntax
 # CMD ["/bin/bash", "-c", "/app/seeder/scripts/execute/01_init_seeder.sh && /app/seeder/scripts/execute/02_run_seeder.sh && /app/seeder/scripts/rpc-call/10_initialize.sh"]
