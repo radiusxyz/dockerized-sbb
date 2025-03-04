@@ -3,44 +3,54 @@ services:
     build:
       context: .
       dockerfile: seeder.Dockerfile
+
+      args:
+        EXECUTE_ENV_PATH: ${EXECUTE_ENV_PATH}
+        SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
+        SEEDER_INTERNAL_RPC_URL: ${SEEDER_INTERNAL_RPC_URL}
+        RPC_CALL_ENV_PATH: ${RPC_CALL_ENV_PATH}
+        LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
+        LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
+        LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
+        LIVENESS_WS_URL: ${LIVENESS_WS_URL}
+        LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
+
     container_name: seeder
+
     environment:
-      SEEDER_EXTERNAL_RPC_URL: "http://127.0.0.1:6000"
-      SEEDER_INTERNAL_RPC_URL: "http://127.0.0.1:6001"
-      LIVENESS_PLATFORM: "ethereum"
-      LIVENESS_SERVICE_PROVIDER: "radius"
-      LIVENESS_RPC_URL: "http://127.0.0.1:8545"
-      LIVENESS_WS_URL: "ws://127.0.0.1:8545"
-      LIVENESS_CONTRACT_ADDRESS: "0x0000000000000000000000000000000000000000"
+      MODE: ${MODE}
+
     ports:
       - "6000:6000"
       - "6001:6001"
+
     volumes:
       - ../seeder/data:/app/seeder/data
+
     entrypoint:
       - "/bin/bash"
       - "-c"
       - |
-        cd /app/seeder
+        # cat ./scripts/execute/env.sh
+        # cat ./scripts/execute/01_init_seeder.sh
 
-        # ✅ Replace values inside env.sh at runtime
-        sed -i "s|SEEDER_EXTERNAL_RPC_URL=.*|SEEDER_EXTERNAL_RPC_URL=${SEEDER_EXTERNAL_RPC_URL}|" /app/seeder/scripts/execute/env.sh
-        sed -i "s|SEEDER_INTERNAL_RPC_URL=.*|SEEDER_INTERNAL_RPC_URL=${SEEDER_INTERNAL_RPC_URL}|" /app/seeder/scripts/execute/env.sh
-        sed -i "s|SEEDER_INTERNAL_RPC_URL=.*|SEEDER_INTERNAL_RPC_URL=${SEEDER_INTERNAL_RPC_URL}|" /app/seeder/scripts/rpc-call/env.sh
-        sed -i "s|LIVENESS_PLATFORM=.*|LIVENESS_PLATFORM=${LIVENESS_PLATFORM}|" /app/seeder/scripts/rpc-call/env.sh
-        sed -i "s|LIVENESS_SERVICE_PROVIDER=.*|LIVENESS_SERVICE_PROVIDER=${LIVENESS_SERVICE_PROVIDER}|" /app/seeder/scripts/rpc-call/env.sh
-        sed -i "s|LIVENESS_RPC_URL=.*|LIVENESS_RPC_URL=${LIVENESS_RPC_URL}|" /app/seeder/scripts/rpc-call/env.sh
-        sed -i "s|LIVENESS_WS_URL=.*|LIVENESS_WS_URL=${LIVENESS_WS_URL}|" /app/seeder/scripts/rpc-call/env.sh
-        sed -i "s|LIVENESS_CONTRACT_ADDRESS=.*|LIVENESS_CONTRACT_ADDRESS=${LIVENESS_CONTRACT_ADDRESS}|" /app/seeder/scripts/rpc-call/env.sh
+        if [ "$MODE" = "init" ]; then
+          echo "🚀 Running Seeder Initialization..."
+          ./scripts/execute/01_init_seeder.sh
+          # cat ./data/Config.toml
+          ./scripts/execute/02_run_seeder.sh &
+          sleep 5
+          ./scripts/rpc-call/10_initialize.sh
+          
+          tail -f /dev/null
 
-        # ✅ Print updated env.sh for debugging
-        echo "Updated env.sh:"
-        cat /app/seeder/scripts/execute/env.sh
-        cat /app/seeder/scripts/rpc-call/env.sh
+        elif [ "$MODE" = "run" ]; then
+          echo "🚀 Running Seeder..."
+          ./scripts/execute/02_run_seeder.sh &
 
-        # Start scripts
-        ./scripts/execute/01_init_seeder.sh
-        ./scripts/execute/02_run_seeder.sh &
-        ./scripts/rpc-call/10_initialize.sh
+          tail -f /dev/null
 
-        tail -f /dev/null
+        else
+          echo "❌ Invalid MODE: ${MODE}"
+          exit 1
+        fi
