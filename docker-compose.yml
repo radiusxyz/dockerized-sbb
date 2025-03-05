@@ -31,8 +31,8 @@ services:
       - "/bin/bash"
       - "-c"
       - |
-        # cat ./scripts/execute/env.sh
-        # cat ./scripts/execute/01_init_seeder.sh
+        cat ./scripts/execute/env.sh
+        cat ./scripts/execute/01_init_seeder.sh
 
         if [ "$MODE" = "init" ]; then
           echo "🚀 Running Seeder Initialization..."
