@@ -2,21 +2,21 @@ FROM rust:1.75 as builder
 
 WORKDIR /app
 
-RUN git clone https://github.com/gylman/distributed_key_generation-gylman && mv distributed_key_generation-gylman distributed_key_generation
+RUN git clone https://github.com/gylman/distributed_key_generation-gylman && mv distributed_key_generation-gylman key_generator
 
-WORKDIR /app/distributed_key_generation
+WORKDIR /app/key_generator
 
 RUN apt-get update && apt-get install -y git clang llvm-dev libclang-dev cmake pkg-config build-essential libssl-dev
 RUN cargo build --release
 
 FROM ubuntu:22.04
 
-WORKDIR /app/distributed_key_generation
+WORKDIR /app/key_generator
 
 RUN apt-get update && apt-get install -y curl
 
-COPY --from=builder /app/distributed_key_generation/scripts /app/distributed_key_generation/scripts
-COPY --from=builder /app/distributed_key_generation/target/release/key-generator /app/distributed_key_generation/target/release/key-generator
+COPY --from=builder /app/key_generator/scripts /app/key_generator/scripts
+COPY --from=builder /app/key_generator/target/release/key-generator /app/key_generator/target/release/key-generator
 
 ARG KEY_GENERATOR_EXECUTE_ENV_PATH
 ARG KEY_GENERATOR_RPC_CALL_ENV_PATH
@@ -32,8 +32,8 @@ RUN echo "KEY_GENERATOR_EXTERNAL_RPC_URL=${KEY_GENERATOR_EXTERNAL_RPC_URL}"
 RUN echo "KEY_GENERATOR_ADDRESS=${KEY_GENERATOR_ADDRESS}"
 RUN echo "KEY_GENERATOR_PRIVATE_KEY=${KEY_GENERATOR_PRIVATE_KEY}"
 
-RUN cp /app/distributed_key_generation/scripts/execute/env_example.sh ${KEY_GENERATOR_EXECUTE_ENV_PATH}
-RUN cp /app/distributed_key_generation/scripts/rpc-call/env_example.sh ${KEY_GENERATOR_RPC_CALL_ENV_PATH}
+RUN cp /app/key_generator/scripts/execute/env_example.sh ${KEY_GENERATOR_EXECUTE_ENV_PATH}
+RUN cp /app/key_generator/scripts/rpc-call/env_example.sh ${KEY_GENERATOR_RPC_CALL_ENV_PATH}
 
 RUN sed -i "s|KEY_GENERATOR_INTERNAL_RPC_URL=.*|KEY_GENERATOR_INTERNAL_RPC_URL=${KEY_GENERATOR_INTERNAL_RPC_URL}|" ${KEY_GENERATOR_EXECUTE_ENV_PATH} 
 RUN sed -i "s|KEY_GENERATOR_CLUSTER_RPC_URL=.*|KEY_GENERATOR_CLUSTER_RPC_URL=${KEY_GENERATOR_CLUSTER_RPC_URL}|" ${KEY_GENERATOR_EXECUTE_ENV_PATH} 
