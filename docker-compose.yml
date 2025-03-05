@@ -1,56 +1,110 @@
 services:
-  seeder:
+  # seeder:
+  #   build:
+  #     context: .
+  #     dockerfile: seeder.Dockerfile
+
+  #     args:
+  #       SEEDER_EXECUTE_ENV_PATH: ${SEEDER_EXECUTE_ENV_PATH}
+  #       SEEDER_RPC_CALL_ENV_PATH: ${SEEDER_RPC_CALL_ENV_PATH}
+  #       SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
+  #       SEEDER_INTERNAL_RPC_URL: ${SEEDER_INTERNAL_RPC_URL}
+
+  #       LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
+  #       LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
+  #       LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
+  #       LIVENESS_WS_URL: ${LIVENESS_WS_URL}
+  #       LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
+
+  #   container_name: seeder
+
+  #   environment:
+  #     SEEDER_MODE: ${SEEDER_MODE}
+
+  #   ports:
+  #     - "6000:6000"
+  #     - "6001:6001"
+
+  #   volumes:
+  #     - ../seeder/data:/app/seeder/data
+
+  #   entrypoint:
+  #     - "/bin/bash"
+  #     - "-c"
+  #     - |
+  #       # cat ./scripts/execute/env.sh
+  #       # cat ./scripts/execute/01_init_seeder.sh
+
+  #       if [ "$MODE" = "init" ]; then
+  #         echo "🚀 Running Seeder Initialization..."
+  #         ./scripts/execute/01_init_seeder.sh
+  #         # cat ./data/Config.toml
+  #         ./scripts/execute/02_run_seeder.sh &
+  #         sleep 5
+  #         ./scripts/rpc-call/10_initialize.sh
+
+  #         tail -f /dev/null
+
+  #       elif [ "$MODE" = "run" ]; then
+  #         echo "🚀 Running Seeder..."
+  #         ./scripts/execute/02_run_seeder.sh &
+
+  #         tail -f /dev/null
+
+  #       else
+  #         echo "❌ Invalid MODE: ${MODE}"
+  #         exit 1
+  #       fi
+  key_generator:
     build:
       context: .
-      dockerfile: seeder.Dockerfile
+      dockerfile: key_generator.Dockerfile
 
       args:
-        EXECUTE_ENV_PATH: ${EXECUTE_ENV_PATH}
-        SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
-        SEEDER_INTERNAL_RPC_URL: ${SEEDER_INTERNAL_RPC_URL}
-        RPC_CALL_ENV_PATH: ${RPC_CALL_ENV_PATH}
-        LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
-        LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
-        LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
-        LIVENESS_WS_URL: ${LIVENESS_WS_URL}
-        LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
+        KEY_GENERATOR_EXECUTE_ENV_PATH: ${KEY_GENERATOR_EXECUTE_ENV_PATH}
+        KEY_GENERATOR_RPC_CALL_ENV_PATH: ${KEY_GENERATOR_RPC_CALL_ENV_PATH}
+        KEY_GENERATOR_INTERNAL_RPC_URL: ${KEY_GENERATOR_INTERNAL_RPC_URL}
+        KEY_GENERATOR_CLUSTER_RPC_URL: ${KEY_GENERATOR_CLUSTER_RPC_URL}
+        KEY_GENERATOR_EXTERNAL_RPC_URL: ${KEY_GENERATOR_EXTERNAL_RPC_URL}
+        KEY_GENERATOR_ADDRESS: ${KEY_GENERATOR_ADDRESS}
+        KEY_GENERATOR_PRIVATE_KEY: ${KEY_GENERATOR_PRIVATE_KEY}
 
-    container_name: seeder
+    container_name: key_generator
 
     environment:
-      MODE: ${MODE}
+      KEY_GENERATOR_MODE: ${KEY_GENERATOR_MODE}
 
     ports:
       - "6000:6000"
       - "6001:6001"
 
     volumes:
-      - ../seeder/data:/app/seeder/data
+      - ../distributed_key_generation./data:/app/distributed_key_generation/data
 
     entrypoint:
       - "/bin/bash"
       - "-c"
       - |
-        cat ./scripts/execute/env.sh
-        cat ./scripts/execute/01_init_seeder.sh
+        # cat ./scripts/execute/env.sh
+        # cat ./scripts/execute/01_init_key_generator.sh
 
-        if [ "$MODE" = "init" ]; then
-          echo "🚀 Running Seeder Initialization..."
-          ./scripts/execute/01_init_seeder.sh
+        if [ "$KEY_GENERATOR_MODE" = "init" ]; then
+          echo "🚀 Running Key Generator Initialization..."
+          ./scripts/execute/01_init_key_generator.sh
           # cat ./data/Config.toml
-          ./scripts/execute/02_run_seeder.sh &
+          ./scripts/execute/02_run_key_generator.sh &
           sleep 5
           ./scripts/rpc-call/10_initialize.sh
           
           tail -f /dev/null
 
-        elif [ "$MODE" = "run" ]; then
-          echo "🚀 Running Seeder..."
-          ./scripts/execute/02_run_seeder.sh &
+        elif [ "$KEY_GENERATOR_MODE" = "run" ]; then
+          echo "🚀 Running Key Generator..."
+          ./scripts/execute/02_run_key_generator.sh &
 
           tail -f /dev/null
 
         else
-          echo "❌ Invalid MODE: ${MODE}"
+          echo "❌ Invalid MODE: ${KEY_GENERATOR_MODE}"
           exit 1
         fi
