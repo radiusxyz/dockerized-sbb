@@ -94,39 +94,14 @@ services:
   #     SEQUENCER_MODE: ${SEQUENCER_MODE}
 
   #   ports:
-  #     - "6000:6000"
-  #     - "6001:6001"
+  #     - "11101:11101"
+  #     - "11102:11102"
+  #     - "11103:11103"
 
   #   volumes:
-  #     - ../tx_orderer/data:/app/tx_orderer/data
+  #     - tx_orderer_data:/app/tx_orderer/data
 
-  #   entrypoint:
-  #     - "/bin/bash"
-  #     - "-c"
-  #     - |
-  #       # cat ./scripts/execute/env.sh
-  #       # cat ./scripts/execute/01_init_sequencer.sh
-
-  #       if [ "$MODE" = "init" ]; then
-  #         echo "🚀 Running Sequencer Initialization..."
-  #         ./scripts/execute/01_init_sequencer.sh
-  #         # cat ./data/Config.toml
-  #         ./scripts/execute/02_run_sequencer.sh &
-  #         sleep 5
-  #         ./scripts/rpc-call/10_initialize.sh
-
-  #         tail -f /dev/null
-
-  #       elif [ "$MODE" = "run" ]; then
-  #         echo "🚀 Running Sequencer..."
-  #         ./scripts/execute/02_run_sequencer.sh &
-
-  #         tail -f /dev/null
-
-  #       else
-  #         echo "❌ Invalid MODE: ${MODE}"
-  #         exit 1
-  #       fi
+  #   entrypoint: ["/app/tx_orderer/scripts/tx_orderer-entrypoint.sh"]
   # secure-rpc-provider:
   #   build:
   #     context: .
@@ -148,14 +123,14 @@ services:
   #     SECURE_RPC_PROVIDER_MODE: ${SECURE_RPC_PROVIDER_MODE}
 
   #   ports:
-  #     - "6000:6000"
-  #     - "6001:6001"
+  #     - "11111:11111"
 
   #   volumes:
-  #     -   secure-rpc-provider_data:/app/secure-rpc-provider/data
+  #     - secure-rpc-provider_data:/app/secure-rpc-provider/data
   #   entrypoint: ["/app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh"]
 
 volumes:
   key_generator_data:
   seeder_data:
   secure-rpc-provider_data:
+  tx_orderer_data:

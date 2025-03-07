@@ -51,6 +51,8 @@ RUN echo "SEEDER_EXTERNAL_RPC_URL=${SEEDER_EXTERNAL_RPC_URL}"
 
 RUN cp /app/tx_orderer/scripts/execute/env_example.sh ${SEQUENCER_EXECUTE_ENV_PATH}
 RUN cp /app/tx_orderer/scripts/rpc-call/env_example.sh ${SEQUENCER_RPC_CALL_ENV_PATH}
+COPY tx_orderer-entrypoint.sh /app/tx_orderer/scripts/tx_orderer-entrypoint.sh
+RUN chmod +x /app/tx_orderer/scripts/tx_orderer-entrypoint.sh
 
 RUN sed -i "s|LIVENESS_PLATFORM=.*|LIVENESS_PLATFORM=${LIVENESS_PLATFORM}|" ${SEQUENCER_RPC_CALL_ENV_PATH}
 RUN sed -i "s|LIVENESS_SERVICE_PROVIDER=.*|LIVENESS_SERVICE_PROVIDER=${LIVENESS_SERVICE_PROVIDER}|" ${SEQUENCER_RPC_CALL_ENV_PATH}
