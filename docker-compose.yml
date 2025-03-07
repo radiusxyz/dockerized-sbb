@@ -1,63 +1,42 @@
 services:
-  seeder:
-    build:
-      context: .
-      dockerfile: seeder.Dockerfile
-
-      args:
-        SEEDER_EXECUTE_ENV_PATH: ${SEEDER_EXECUTE_ENV_PATH}
-        SEEDER_RPC_CALL_ENV_PATH: ${SEEDER_RPC_CALL_ENV_PATH}
-        SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
-        SEEDER_INTERNAL_RPC_URL: ${SEEDER_INTERNAL_RPC_URL}
-
-        LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
-        LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
-        LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
-        LIVENESS_WS_URL: ${LIVENESS_WS_URL}
-        LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
-
-    container_name: seeder
-
-    environment:
-      SEEDER_MODE: ${SEEDER_MODE}
-
-    ports:
-      - "10001:10001"
-      - "10002:10002"
-
-    volumes:
-      - seeder_data:/app/seeder/data
-
-    entrypoint: ["/app/seeder/scripts/seeder-entrypoint.sh"]
-
-  # key_generator:
+  # seeder:
   #   build:
   #     context: .
-  #     dockerfile: key_generator.Dockerfile
+  #     dockerfile: seeder.Dockerfile
 
-  #     args:
-  #       KEY_GENERATOR_EXECUTE_ENV_PATH: ${KEY_GENERATOR_EXECUTE_ENV_PATH}
-  #       KEY_GENERATOR_RPC_CALL_ENV_PATH: ${KEY_GENERATOR_RPC_CALL_ENV_PATH}
-  #       KEY_GENERATOR_INTERNAL_RPC_URL: ${KEY_GENERATOR_INTERNAL_RPC_URL}
-  #       KEY_GENERATOR_CLUSTER_RPC_URL: ${KEY_GENERATOR_CLUSTER_RPC_URL}
-  #       KEY_GENERATOR_EXTERNAL_RPC_URL: ${KEY_GENERATOR_EXTERNAL_RPC_URL}
-  #       KEY_GENERATOR_ADDRESS: ${KEY_GENERATOR_ADDRESS}
-  #       KEY_GENERATOR_PRIVATE_KEY: ${KEY_GENERATOR_PRIVATE_KEY}
-
-  #   container_name: key_generator
-
-  #   environment:
-  #     KEY_GENERATOR_MODE: ${KEY_GENERATOR_MODE}
+  #   env_file:
+  #     - .env
+  #   container_name: seeder
 
   #   ports:
-  #     - "11001:11001"
-  #     - "11002:11002"
-  #     - "11003:11003"
+  #     - "10001:10001"
+  #     - "10002:10002"
 
   #   volumes:
-  #     - key_generator_data:/app/key_generator/data
+  #     - ./seeder-entrypoint.sh:/app/seeder/scripts/seeder-entrypoint.sh
+  #     - seeder_data:/app/seeder/data
 
-  #   entrypoint: ["/app/key_generator/scripts/key_generator-entrypoint.sh"]
+  #   entrypoint: ["/bin/bash", "/app/seeder/scripts/seeder-entrypoint.sh"]
+
+  key_generator:
+    build:
+      context: .
+      dockerfile: key_generator.Dockerfile
+
+    container_name: key_generator
+
+    ports:
+      - "11001:11001"
+      - "11002:11002"
+      - "11003:11003"
+    env_file:
+      - .env
+    volumes:
+      - ./key_generator-entrypoint.sh:/app/key_generator/scripts/key_generator-entrypoint.sh
+      - key_generator_data:/app/key_generator/data
+
+    entrypoint:
+      ["/bin/bash", "/app/key_generator/scripts/key_generator-entrypoint.sh"]
   # tx_orderer:
   #   build:
   #     context: .
