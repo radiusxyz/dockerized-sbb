@@ -6,12 +6,7 @@ set -e
 if [[ ! -f "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH" ]]; then
     echo "📄 Generating missing env.sh..."
     cp ./scripts/execute/env_example.sh "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH"
-fi
 
-echo "✅ Environment files are ready."
-if [ "$SECURE_RPC_PROVIDER_MODE" = "init" ]; then
-
-    # ✅ Apply environment variables dynamically at runtime
     sed -i "s|SECURE_RPC_PROVIDER_INTERNAL_RPC_URL=.*|SECURE_RPC_PROVIDER_INTERNAL_RPC_URL=${SECURE_RPC_PROVIDER_INTERNAL_RPC_URL}|" "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH"
     sed -i "s|SECURE_RPC_PROVIDER_CLUSTER_RPC_URL=.*|SECURE_RPC_PROVIDER_CLUSTER_RPC_URL=${SECURE_RPC_PROVIDER_CLUSTER_RPC_URL}|" "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH"
     sed -i "s|SECURE_RPC_PROVIDER_EXTERNAL_RPC_URL=.*|SECURE_RPC_PROVIDER_EXTERNAL_RPC_URL=${SECURE_RPC_PROVIDER_EXTERNAL_RPC_URL}|" "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH"
@@ -21,6 +16,13 @@ if [ "$SECURE_RPC_PROVIDER_MODE" = "init" ]; then
     sed -i "s|ROLLUP_RPC_URL=.*|ROLLUP_RPC_URL=${ROLLUP_RPC_URL}|" "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH"
 
     sed -i "s|KEY_GENERATOR_EXTERNAL_RPC_URL=.*|KEY_GENERATOR_EXTERNAL_RPC_URL=${KEY_GENERATOR_EXTERNAL_RPC_URL}|" "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH"
+fi
+
+echo "✅ Environment files are ready."
+
+if [ "$SECURE_RPC_PROVIDER_MODE" = "init" ]; then
+
+    # ✅ Apply environment variables dynamically at runtime
 
     echo "🚀 Running Secure RPC Provider Initialization..."
     ./scripts/execute/01_init_secure_rpc.sh
