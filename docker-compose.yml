@@ -35,7 +35,7 @@ services:
   #       # cat ./scripts/execute/env.sh
   #       # cat ./scripts/execute/01_init_seeder.sh
 
-  #       if [ "$MODE" = "init" ]; then
+  #       if [ "$SEEDER_MODE" = "init" ]; then
   #         echo "🚀 Running Seeder Initialization..."
   #         ./scripts/execute/01_init_seeder.sh
   #         # cat ./data/Config.toml
@@ -45,14 +45,14 @@ services:
 
   #         tail -f /dev/null
 
-  #       elif [ "$MODE" = "run" ]; then
+  #       elif [ "$SEEDER_MODE" = "run" ]; then
   #         echo "🚀 Running Seeder..."
   #         ./scripts/execute/02_run_seeder.sh &
 
   #         tail -f /dev/null
 
   #       else
-  #         echo "❌ Invalid MODE: ${MODE}"
+  #         echo "❌ Invalid SEEDER_MODE: ${SEEDER_MODE}"
   #         exit 1
   #       fi
   # key_generator:
@@ -108,6 +108,75 @@ services:
   #         echo "❌ Invalid MODE: ${KEY_GENERATOR_MODE}"
   #         exit 1
   #       fi
+  tx_orderer:
+    build:
+      context: .
+      dockerfile: tx_orderer.Dockerfile
+
+      args:
+        LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
+        LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
+        LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
+        LIVENESS_WS_URL: ${LIVENESS_WS_URL}
+        LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
+
+        CLUSTER_ID: ${CLUSTER_ID}
+
+        VALIDATION_PLATFORM: ${VALIDATION_PLATFORM}
+        VALIDATION_SERVICE_PROVIDER: ${VALIDATION_SERVICE_PROVIDER}
+        VALIDATION_RPC_URL: ${VALIDATION_RPC_URL}
+        VALIDATION_WS_URL: ${VALIDATION_WS_URL}
+        VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS: ${VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS}
+
+        SEQUENCER_EXECUTE_ENV_PATH: ${SEQUENCER_EXECUTE_ENV_PATH}
+        SEQUENCER_RPC_CALL_ENV_PATH: ${SEQUENCER_RPC_CALL_ENV_PATH}
+        SEQUENCER_INTERNAL_RPC_URL: ${SEQUENCER_INTERNAL_RPC_URL}
+        SEQUENCER_EXTERNAL_RPC_URL: ${SEQUENCER_EXTERNAL_RPC_URL}
+        SEQUENCER_CLUSTER_RPC_URL: ${SEQUENCER_CLUSTER_RPC_URL}
+        SEQUENCER_PRIVATE_KEY: ${SEQUENCER_PRIVATE_KEY}
+
+        KEY_GENERATOR_EXTERNAL_RPC_URL: ${KEY_GENERATOR_EXTERNAL_RPC_URL}
+        SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
+
+    container_name: tx_orderer
+
+    environment:
+      SEQUENCER_MODE: ${SEQUENCER_MODE}
+
+    ports:
+      - "6000:6000"
+      - "6001:6001"
+
+    volumes:
+      - ../tx_orderer/data:/app/tx_orderer/data
+
+    entrypoint:
+      - "/bin/bash"
+      - "-c"
+      - |
+        # cat ./scripts/execute/env.sh
+        # cat ./scripts/execute/01_init_sequencer.sh
+
+        if [ "$MODE" = "init" ]; then
+          echo "🚀 Running Sequencer Initialization..."
+          ./scripts/execute/01_init_sequencer.sh
+          # cat ./data/Config.toml
+          ./scripts/execute/02_run_sequencer.sh &
+          sleep 5
+          ./scripts/rpc-call/10_initialize.sh
+
+          tail -f /dev/null
+
+        elif [ "$MODE" = "run" ]; then
+          echo "🚀 Running Sequencer..."
+          ./scripts/execute/02_run_sequencer.sh &
+
+          tail -f /dev/null
+
+        else
+          echo "❌ Invalid MODE: ${MODE}"
+          exit 1
+        fi
   # secure-rpc-provider:
   #   build:
   #     context: .
