@@ -4,7 +4,7 @@ set -e
 
 # ✅ Ensure env.sh files exist before execution
 if [[ ! -f "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH" ]]; then
-    echo "📄 Generating missing env.sh..."
+    echo "📄 Generating execution env.sh..."
     cp ./scripts/execute/env_example.sh "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH"
 
     sed -i "s|SECURE_RPC_PROVIDER_INTERNAL_RPC_URL=.*|SECURE_RPC_PROVIDER_INTERNAL_RPC_URL=${SECURE_RPC_PROVIDER_INTERNAL_RPC_URL}|" "$SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH"

@@ -4,7 +4,7 @@ set -e
 
 # ✅ Ensure env.sh files exist before execution
 if [[ ! -f "$SEQUENCER_EXECUTE_ENV_PATH" ]]; then
-    echo "📄 Generating missing env.sh..."
+    echo "📄 Generating execution env.sh..."
     cp ./scripts/execute/env_example.sh "$SEQUENCER_EXECUTE_ENV_PATH"
 
     sed -i "s|SEQUENCER_INTERNAL_RPC_URL=.*|SEQUENCER_INTERNAL_RPC_URL=${SEQUENCER_INTERNAL_RPC_URL}|" "$SEQUENCER_EXECUTE_ENV_PATH}"
@@ -19,7 +19,7 @@ if [[ ! -f "$SEQUENCER_EXECUTE_ENV_PATH" ]]; then
 fi
 
 if [[ ! -f "$SEQUENCER_RPC_CALL_ENV_PATH" ]]; then
-    echo "📄 Generating missing rpc-call env.sh..."
+    echo "📄 Generating rpc-call env.sh..."
     cp ./scripts/rpc-call/env_example.sh "$SEQUENCER_RPC_CALL_ENV_PATH"
 
     sed -i "s|SEQUENCER_INTERNAL_RPC_URL=.*|SEQUENCER_INTERNAL_RPC_URL=${SEQUENCER_INTERNAL_RPC_URL}|" "$SEQUENCER_RPC_CALL_ENV_PATH"
