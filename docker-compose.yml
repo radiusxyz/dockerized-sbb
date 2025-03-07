@@ -58,9 +58,6 @@ services:
   #     - key_generator_data:/app/key_generator/data
 
   #   entrypoint: ["/app/key_generator/scripts/key_generator-entrypoint.sh"]
-volumes:
-  key_generator_data:
-  seeder_data:
   # tx_orderer:
   #   build:
   #     context: .
@@ -155,31 +152,10 @@ volumes:
   #     - "6001:6001"
 
   #   volumes:
-  #     - ../secure-rpc-provider/data:/app/secure-rpc-provider/data
+  #     -   secure-rpc-provider_data:/app/secure-rpc-provider/data
+  #   entrypoint: ["/app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh"]
 
-  #   entrypoint:
-  #     - "/bin/bash"
-  #     - "-c"
-  #     - |
-  #       # cat ./scripts/execute/env.sh
-  #       # cat ./scripts/execute/01_init_secure_rpc.sh
-
-  #       if [ "$SECURE_RPC_PROVIDER_MODE" = "init" ]; then
-  #         echo "🚀 Running Secure RPC Provider Initialization..."
-  #         ./scripts/execute/01_init_secure_rpc.sh
-  #         # cat ./data/Config.toml
-  #         ./scripts/execute/02_run_secure_rpc.sh &
-  #         sleep 5
-
-  #         tail -f /dev/null
-
-  #       elif [ "$SECURE_RPC_PROVIDER_MODE" = "run" ]; then
-  #         echo "🚀 Running Secure RPC Provider..."
-  #         ./scripts/execute/02_run_secure_rpc.sh &
-
-  #         tail -f /dev/null
-
-  #       else
-  #         echo "❌ Invalid MODE: ${SECURE_RPC_PROVIDER_MODE}"
-  #         exit 1
-  #       fi
+volumes:
+  key_generator_data:
+  seeder_data:
+  secure-rpc-provider_data:

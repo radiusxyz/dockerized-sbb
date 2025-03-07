@@ -16,7 +16,9 @@ WORKDIR /app/secure-rpc-provider
 RUN apt-get update && apt-get install -y curl
 
 COPY --from=builder /app/secure-rpc-provider/scripts /app/secure-rpc-provider/scripts
-COPY --from=builder /app/secure-rpc-provider/target/release/key-generator /app/secure-rpc-provider/target/release/key-generator
+COPY --from=builder /app/secure-rpc-provider/target/release/secure-rpc /app/secure-rpc-provider/target/release/secure-rpc
+COPY secure-rpc-provider-entrypoint.sh /app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh
+RUN chmod +x /app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh
 
 ARG SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH
 ARG SECURE_RPC_EXTERNAL_RPC_URL
