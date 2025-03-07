@@ -1,60 +1,35 @@
 services:
-  # seeder:
-  #   build:
-  #     context: .
-  #     dockerfile: seeder.Dockerfile
+  seeder:
+    build:
+      context: .
+      dockerfile: seeder.Dockerfile
 
-  #     args:
-  #       SEEDER_EXECUTE_ENV_PATH: ${SEEDER_EXECUTE_ENV_PATH}
-  #       SEEDER_RPC_CALL_ENV_PATH: ${SEEDER_RPC_CALL_ENV_PATH}
-  #       SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
-  #       SEEDER_INTERNAL_RPC_URL: ${SEEDER_INTERNAL_RPC_URL}
+      args:
+        SEEDER_EXECUTE_ENV_PATH: ${SEEDER_EXECUTE_ENV_PATH}
+        SEEDER_RPC_CALL_ENV_PATH: ${SEEDER_RPC_CALL_ENV_PATH}
+        SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
+        SEEDER_INTERNAL_RPC_URL: ${SEEDER_INTERNAL_RPC_URL}
 
-  #       LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
-  #       LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
-  #       LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
-  #       LIVENESS_WS_URL: ${LIVENESS_WS_URL}
-  #       LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
+        LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
+        LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
+        LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
+        LIVENESS_WS_URL: ${LIVENESS_WS_URL}
+        LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
 
-  #   container_name: seeder
+    container_name: seeder
 
-  #   environment:
-  #     SEEDER_MODE: ${SEEDER_MODE}
+    environment:
+      SEEDER_MODE: ${SEEDER_MODE}
 
-  #   ports:
-  #     - "6000:6000"
-  #     - "6001:6001"
+    ports:
+      - "10001:10001"
+      - "10002:10002"
 
-  #   volumes:
-  #     - ../seeder/data:/app/seeder/data
+    volumes:
+      - seeder_data:/app/seeder/data
 
-  #   entrypoint:
-  #     - "/bin/bash"
-  #     - "-c"
-  #     - |
-  #       # cat ./scripts/execute/env.sh
-  #       # cat ./scripts/execute/01_init_seeder.sh
+    entrypoint: ["/app/seeder/scripts/seeder-entrypoint.sh"]
 
-  #       if [ "$SEEDER_MODE" = "init" ]; then
-  #         echo "🚀 Running Seeder Initialization..."
-  #         ./scripts/execute/01_init_seeder.sh
-  #         # cat ./data/Config.toml
-  #         ./scripts/execute/02_run_seeder.sh &
-  #         sleep 5
-  #         ./scripts/rpc-call/10_initialize.sh
-
-  #         tail -f /dev/null
-
-  #       elif [ "$SEEDER_MODE" = "run" ]; then
-  #         echo "🚀 Running Seeder..."
-  #         ./scripts/execute/02_run_seeder.sh &
-
-  #         tail -f /dev/null
-
-  #       else
-  #         echo "❌ Invalid SEEDER_MODE: ${SEEDER_MODE}"
-  #         exit 1
-  #       fi
   # key_generator:
   #   build:
   #     context: .
@@ -75,108 +50,86 @@ services:
   #     KEY_GENERATOR_MODE: ${KEY_GENERATOR_MODE}
 
   #   ports:
+  #     - "11001:11001"
+  #     - "11002:11002"
+  #     - "11003:11003"
+
+  #   volumes:
+  #     - key_generator_data:/app/key_generator/data
+
+  #   entrypoint: ["/app/key_generator/scripts/key_generator-entrypoint.sh"]
+volumes:
+  key_generator_data:
+  seeder_data:
+  # tx_orderer:
+  #   build:
+  #     context: .
+  #     dockerfile: tx_orderer.Dockerfile
+
+  #     args:
+  #       LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
+  #       LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
+  #       LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
+  #       LIVENESS_WS_URL: ${LIVENESS_WS_URL}
+  #       LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
+
+  #       CLUSTER_ID: ${CLUSTER_ID}
+
+  #       VALIDATION_PLATFORM: ${VALIDATION_PLATFORM}
+  #       VALIDATION_SERVICE_PROVIDER: ${VALIDATION_SERVICE_PROVIDER}
+  #       VALIDATION_RPC_URL: ${VALIDATION_RPC_URL}
+  #       VALIDATION_WS_URL: ${VALIDATION_WS_URL}
+  #       VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS: ${VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS}
+
+  #       SEQUENCER_EXECUTE_ENV_PATH: ${SEQUENCER_EXECUTE_ENV_PATH}
+  #       SEQUENCER_RPC_CALL_ENV_PATH: ${SEQUENCER_RPC_CALL_ENV_PATH}
+  #       SEQUENCER_INTERNAL_RPC_URL: ${SEQUENCER_INTERNAL_RPC_URL}
+  #       SEQUENCER_EXTERNAL_RPC_URL: ${SEQUENCER_EXTERNAL_RPC_URL}
+  #       SEQUENCER_CLUSTER_RPC_URL: ${SEQUENCER_CLUSTER_RPC_URL}
+  #       SEQUENCER_PRIVATE_KEY: ${SEQUENCER_PRIVATE_KEY}
+
+  #       KEY_GENERATOR_EXTERNAL_RPC_URL: ${KEY_GENERATOR_EXTERNAL_RPC_URL}
+  #       SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
+
+  #   container_name: tx_orderer
+
+  #   environment:
+  #     SEQUENCER_MODE: ${SEQUENCER_MODE}
+
+  #   ports:
   #     - "6000:6000"
   #     - "6001:6001"
 
   #   volumes:
-  #     - ../distributed_key_generation/data:/app/distributed_key_generation/data
+  #     - ../tx_orderer/data:/app/tx_orderer/data
 
   #   entrypoint:
   #     - "/bin/bash"
   #     - "-c"
   #     - |
   #       # cat ./scripts/execute/env.sh
-  #       # cat ./scripts/execute/01_init_key_generator.sh
+  #       # cat ./scripts/execute/01_init_sequencer.sh
 
-  #       if [ "$KEY_GENERATOR_MODE" = "init" ]; then
-  #         echo "🚀 Running Key Generator Initialization..."
-  #         ./scripts/execute/01_init_key_generator.sh
+  #       if [ "$MODE" = "init" ]; then
+  #         echo "🚀 Running Sequencer Initialization..."
+  #         ./scripts/execute/01_init_sequencer.sh
   #         # cat ./data/Config.toml
-  #         ./scripts/execute/02_run_key_generator.sh &
+  #         ./scripts/execute/02_run_sequencer.sh &
   #         sleep 5
   #         ./scripts/rpc-call/10_initialize.sh
 
   #         tail -f /dev/null
 
-  #       elif [ "$KEY_GENERATOR_MODE" = "run" ]; then
-  #         echo "🚀 Running Key Generator..."
-  #         ./scripts/execute/02_run_key_generator.sh &
+  #       elif [ "$MODE" = "run" ]; then
+  #         echo "🚀 Running Sequencer..."
+  #         ./scripts/execute/02_run_sequencer.sh &
 
   #         tail -f /dev/null
 
   #       else
-  #         echo "❌ Invalid MODE: ${KEY_GENERATOR_MODE}"
+  #         echo "❌ Invalid MODE: ${MODE}"
   #         exit 1
   #       fi
-  tx_orderer:
-    build:
-      context: .
-      dockerfile: tx_orderer.Dockerfile
-
-      args:
-        LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
-        LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
-        LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
-        LIVENESS_WS_URL: ${LIVENESS_WS_URL}
-        LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
-
-        CLUSTER_ID: ${CLUSTER_ID}
-
-        VALIDATION_PLATFORM: ${VALIDATION_PLATFORM}
-        VALIDATION_SERVICE_PROVIDER: ${VALIDATION_SERVICE_PROVIDER}
-        VALIDATION_RPC_URL: ${VALIDATION_RPC_URL}
-        VALIDATION_WS_URL: ${VALIDATION_WS_URL}
-        VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS: ${VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS}
-
-        SEQUENCER_EXECUTE_ENV_PATH: ${SEQUENCER_EXECUTE_ENV_PATH}
-        SEQUENCER_RPC_CALL_ENV_PATH: ${SEQUENCER_RPC_CALL_ENV_PATH}
-        SEQUENCER_INTERNAL_RPC_URL: ${SEQUENCER_INTERNAL_RPC_URL}
-        SEQUENCER_EXTERNAL_RPC_URL: ${SEQUENCER_EXTERNAL_RPC_URL}
-        SEQUENCER_CLUSTER_RPC_URL: ${SEQUENCER_CLUSTER_RPC_URL}
-        SEQUENCER_PRIVATE_KEY: ${SEQUENCER_PRIVATE_KEY}
-
-        KEY_GENERATOR_EXTERNAL_RPC_URL: ${KEY_GENERATOR_EXTERNAL_RPC_URL}
-        SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
-
-    container_name: tx_orderer
-
-    environment:
-      SEQUENCER_MODE: ${SEQUENCER_MODE}
-
-    ports:
-      - "6000:6000"
-      - "6001:6001"
-
-    volumes:
-      - ../tx_orderer/data:/app/tx_orderer/data
-
-    entrypoint:
-      - "/bin/bash"
-      - "-c"
-      - |
-        # cat ./scripts/execute/env.sh
-        # cat ./scripts/execute/01_init_sequencer.sh
-
-        if [ "$MODE" = "init" ]; then
-          echo "🚀 Running Sequencer Initialization..."
-          ./scripts/execute/01_init_sequencer.sh
-          # cat ./data/Config.toml
-          ./scripts/execute/02_run_sequencer.sh &
-          sleep 5
-          ./scripts/rpc-call/10_initialize.sh
-
-          tail -f /dev/null
-
-        elif [ "$MODE" = "run" ]; then
-          echo "🚀 Running Sequencer..."
-          ./scripts/execute/02_run_sequencer.sh &
-
-          tail -f /dev/null
-
-        else
-          echo "❌ Invalid MODE: ${MODE}"
-          exit 1
-        fi
   # secure-rpc-provider:
   #   build:
   #     context: .

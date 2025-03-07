@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y curl
 
 COPY --from=builder /app/key_generator/scripts /app/key_generator/scripts
 COPY --from=builder /app/key_generator/target/release/key-generator /app/key_generator/target/release/key-generator
+COPY key_generator-entrypoint.sh /app/key_generator/scripts/key_generator-entrypoint.sh
+RUN chmod +x /app/key_generator/scripts/key_generator-entrypoint.sh
 
 ARG KEY_GENERATOR_EXECUTE_ENV_PATH
 ARG KEY_GENERATOR_RPC_CALL_ENV_PATH

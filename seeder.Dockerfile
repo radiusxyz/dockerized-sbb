@@ -17,6 +17,8 @@ RUN apt-get update && apt-get install -y curl
 
 COPY --from=builder /app/seeder/scripts /app/seeder/scripts
 COPY --from=builder /app/seeder/target/release/seeder /app/seeder/target/release/seeder
+COPY seeder-entrypoint.sh /app/seeder/scripts/seeder-entrypoint.sh
+RUN chmod +x /app/seeder/scripts/seeder-entrypoint.sh
 
 ARG SEEDER_EXECUTE_ENV_PATH
 ARG SEEDER_EXTERNAL_RPC_URL
