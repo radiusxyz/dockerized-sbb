@@ -3,28 +3,22 @@ services:
   #   build:
   #     context: .
   #     dockerfile: seeder.Dockerfile
-
   #   env_file:
   #     - .env
   #   container_name: seeder
-
   #   ports:
   #     - "10001:10001"
   #     - "10002:10002"
-
   #   volumes:
   #     - ./seeder-entrypoint.sh:/app/seeder/scripts/seeder-entrypoint.sh
   #     - seeder_data:/app/seeder/data
-
   #   entrypoint: ["/bin/bash", "/app/seeder/scripts/seeder-entrypoint.sh"]
 
   key_generator:
     build:
       context: .
       dockerfile: key_generator.Dockerfile
-
     container_name: key_generator
-
     ports:
       - "11001:11001"
       - "11002:11002"
@@ -34,80 +28,42 @@ services:
     volumes:
       - ./key_generator-entrypoint.sh:/app/key_generator/scripts/key_generator-entrypoint.sh
       - key_generator_data:/app/key_generator/data
-
     entrypoint:
       ["/bin/bash", "/app/key_generator/scripts/key_generator-entrypoint.sh"]
-  # tx_orderer:
-  #   build:
-  #     context: .
-  #     dockerfile: tx_orderer.Dockerfile
+  tx_orderer:
+    build:
+      context: .
+      dockerfile: tx_orderer.Dockerfile
 
-  #     args:
-  #       LIVENESS_PLATFORM: ${LIVENESS_PLATFORM}
-  #       LIVENESS_SERVICE_PROVIDER: ${LIVENESS_SERVICE_PROVIDER}
-  #       LIVENESS_RPC_URL: ${LIVENESS_RPC_URL}
-  #       LIVENESS_WS_URL: ${LIVENESS_WS_URL}
-  #       LIVENESS_CONTRACT_ADDRESS: ${LIVENESS_CONTRACT_ADDRESS}
-
-  #       CLUSTER_ID: ${CLUSTER_ID}
-
-  #       VALIDATION_PLATFORM: ${VALIDATION_PLATFORM}
-  #       VALIDATION_SERVICE_PROVIDER: ${VALIDATION_SERVICE_PROVIDER}
-  #       VALIDATION_RPC_URL: ${VALIDATION_RPC_URL}
-  #       VALIDATION_WS_URL: ${VALIDATION_WS_URL}
-  #       VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS: ${VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS}
-
-  #       SEQUENCER_EXECUTE_ENV_PATH: ${SEQUENCER_EXECUTE_ENV_PATH}
-  #       SEQUENCER_RPC_CALL_ENV_PATH: ${SEQUENCER_RPC_CALL_ENV_PATH}
-  #       SEQUENCER_INTERNAL_RPC_URL: ${SEQUENCER_INTERNAL_RPC_URL}
-  #       SEQUENCER_EXTERNAL_RPC_URL: ${SEQUENCER_EXTERNAL_RPC_URL}
-  #       SEQUENCER_CLUSTER_RPC_URL: ${SEQUENCER_CLUSTER_RPC_URL}
-  #       SEQUENCER_PRIVATE_KEY: ${SEQUENCER_PRIVATE_KEY}
-
-  #       KEY_GENERATOR_EXTERNAL_RPC_URL: ${KEY_GENERATOR_EXTERNAL_RPC_URL}
-  #       SEEDER_EXTERNAL_RPC_URL: ${SEEDER_EXTERNAL_RPC_URL}
-
-  #   container_name: tx_orderer
-
-  #   environment:
-  #     SEQUENCER_MODE: ${SEQUENCER_MODE}
-
-  #   ports:
-  #     - "11101:11101"
-  #     - "11102:11102"
-  #     - "11103:11103"
-
-  #   volumes:
-  #     - tx_orderer_data:/app/tx_orderer/data
-
-  #   entrypoint: ["/app/tx_orderer/scripts/tx_orderer-entrypoint.sh"]
-  # secure-rpc-provider:
-  #   build:
-  #     context: .
-  #     dockerfile: secure-rpc-provider.Dockerfile
-
-  #     args:
-  #       SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH: ${SECURE_RPC_PROVIDER_EXECUTE_ENV_PATH}
-  #       SECURE_RPC_PROVIDER_EXTERNAL_RPC_URL: ${SECURE_RPC_PROVIDER_EXTERNAL_RPC_URL}
-  #       SEQUENCER_RPC_URL: ${SEQUENCER_RPC_URL}
-  #       ENCRYPTED_TRANSACTION_TYPE: ${ENCRYPTED_TRANSACTION_TYPE}
-  #       ROLLUP_ID: ${ROLLUP_ID}
-  #       ROLLUP_RPC_URL: ${ROLLUP_RPC_URL}
-  #       SECURE_RPC_PROVIDER_PRIVATE_KEY: ${SECURE_RPC_PROVIDER_PRIVATE_KEY}
-  #       KEY_GENERATOR_EXTERNAL_RPC_URL: ${KEY_GENERATOR_EXTERNAL_RPC_URL}
-
-  #   container_name: secure-rpc-provider
-
-  #   environment:
-  #     SECURE_RPC_PROVIDER_MODE: ${SECURE_RPC_PROVIDER_MODE}
-
-  #   ports:
-  #     - "11111:11111"
-
-  #   volumes:
-  #     - secure-rpc-provider_data:/app/secure-rpc-provider/data
-  #   entrypoint: ["/app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh"]
-
+    container_name: tx_orderer
+    ports:
+      - "11101:11101"
+      - "11102:11102"
+      - "11103:11103"
+    env_file:
+      - .env
+    volumes:
+      - ./tx_orderer-entrypoint.sh:/app/tx_orderer/scripts/tx_orderer-entrypoint.sh
+      - tx_orderer_data:/app/tx_orderer/data
+    entrypoint:
+      ["/bin/bash", "/app/tx_orderer/scripts/tx_orderer-entrypoint.sh"]
+  secure-rpc-provider:
+    build:
+      context: .
+      dockerfile: secure-rpc-provider.Dockerfile
+    container_name: secure-rpc-provider
+    ports:
+      - "11111:11111"
+    env_file:
+      - .env
+    volumes:
+      - ./secure-rpc-provider-entrypoint.sh:/app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh
+      - secure-rpc-provider_data:/app/secure-rpc-provider/data
+    entrypoint:
+      [
+        "/bin/bash",
+        "/app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh",
+      ]
 volumes:
   key_generator_data:
   seeder_data:
