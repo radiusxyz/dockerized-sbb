@@ -13,7 +13,12 @@ FROM ubuntu:22.04
 
 WORKDIR /app/tx_orderer
 
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl git
+
+RUN curl -L https://foundry.paradigm.xyz | bash && \
+    /root/.foundry/bin/foundryup -v nightly-5b7e4cb3c882b28f3c32ba580de27ce7381f415a
+
+ENV PATH="/root/.foundry/bin:${PATH}"
 
 COPY --from=builder /app/tx_orderer/scripts /app/tx_orderer/scripts
 COPY --from=builder /app/tx_orderer/target/release/sequencer /app/tx_orderer/target/release/sequencer

@@ -1,18 +1,18 @@
 services:
-  seeder:
-    build:
-      context: .
-      dockerfile: seeder.Dockerfile
-    env_file:
-      - .env
-    container_name: seeder
-    ports:
-      - "10001:10001"
-      - "10002:10002"
-    volumes:
-      - ./seeder-entrypoint.sh:/app/seeder/scripts/seeder-entrypoint.sh
-      - seeder_data:/app/seeder/data
-    entrypoint: ["/bin/bash", "/app/seeder/scripts/seeder-entrypoint.sh"]
+  # seeder:
+  #   build:
+  #     context: .
+  #     dockerfile: seeder.Dockerfile
+  #   env_file:
+  #     - .env
+  #   container_name: seeder
+  #   ports:
+  #     - "10001:10001"
+  #     - "10002:10002"
+  #   volumes:
+  #     - ./seeder-entrypoint.sh:/app/seeder/scripts/seeder-entrypoint.sh
+  #     - seeder_data:/app/seeder/data
+  #   entrypoint: ["/bin/bash", "/app/seeder/scripts/seeder-entrypoint.sh"]
   # key_generator:
   #   build:
   #     context: .
@@ -29,22 +29,22 @@ services:
   #     - key_generator_data:/app/key_generator/data
   #   entrypoint:
   #     ["/bin/bash", "/app/key_generator/scripts/key_generator-entrypoint.sh"]
-  # tx_orderer:
-  #   build:
-  #     context: .
-  #     dockerfile: tx_orderer.Dockerfile
-  #   container_name: tx_orderer
-  #   ports:
-  #     - "11101:11101"
-  #     - "11102:11102"
-  #     - "11103:11103"
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ./tx_orderer-entrypoint.sh:/app/tx_orderer/scripts/tx_orderer-entrypoint.sh
-  #     - tx_orderer_data:/app/tx_orderer/data
-  #   entrypoint:
-  #     ["/bin/bash", "/app/tx_orderer/scripts/tx_orderer-entrypoint.sh"]
+  tx_orderer:
+    build:
+      context: .
+      dockerfile: tx_orderer.Dockerfile
+    container_name: tx_orderer
+    ports:
+      - "11101:11101"
+      - "11102:11102"
+      - "11103:11103"
+    env_file:
+      - .env
+    volumes:
+      - ./tx_orderer-entrypoint.sh:/app/tx_orderer/scripts/tx_orderer-entrypoint.sh
+      - tx_orderer_data:/app/tx_orderer/data
+    entrypoint:
+      ["/bin/bash", "/app/tx_orderer/scripts/tx_orderer-entrypoint.sh"]
   # secure-rpc-provider:
   #   build:
   #     context: .
