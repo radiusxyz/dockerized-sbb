@@ -2,6 +2,9 @@
 
 set -e
 
+echo "🚀 Starting TX Orderer..."
+cast --version  # ✅ This should now work inside the container
+
 # ✅ Ensure env.sh files exist before execution
 if [[ ! -f "$SEQUENCER_EXECUTE_ENV_PATH" ]]; then
     echo "📄 Generating execution env.sh..."
