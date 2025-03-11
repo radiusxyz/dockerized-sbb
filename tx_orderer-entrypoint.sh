@@ -46,56 +46,56 @@ echo "✅ Environment files are ready."
 
 if [ "$SEQUENCER_MODE" = "init" ]; then
 
-    # foundryup -v nightly-5b7e4cb3c882b28f3c32ba580de27ce7381f415a
+    # # foundryup -v nightly-5b7e4cb3c882b28f3c32ba580de27ce7381f415a
 
-    # ============================
-    # 2. Register Operator
-    # ============================
-    echo "Registering operator..."
-    cast send "$OPERATOR_REGISTRY_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" --private-key "$OPERATOR_PRIVATE_KEY" \
-    "registerOperator()"
+    # # ============================
+    # # 2. Register Operator
+    # # ============================
+    # echo "Registering operator..."
+    # cast send "$OPERATOR_REGISTRY_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" --private-key "$OPERATOR_PRIVATE_KEY" \
+    # "registerOperator()"
 
-    echo "Checking operator registration..."
-    cast call "$OPERATOR_REGISTRY_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" \
-    "isEntity(address who)(bool)" "$OPERATOR_ADDRESS"
-    echo "Expected output: true"
+    # echo "Checking operator registration..."
+    # cast call "$OPERATOR_REGISTRY_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" \
+    # "isEntity(address who)(bool)" "$OPERATOR_ADDRESS"
+    # echo "Expected output: true"
 
-    # ============================
-    # 3. Opt-in to Vault
-    # ============================
-    echo "Opting in to vault..."
-    cast send "$OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" --private-key "$OPERATOR_PRIVATE_KEY" \
-    "optIn(address vault)" "$VAULT_CONTRACT_ADDRESS"
+    # # ============================
+    # # 3. Opt-in to Vault
+    # # ============================
+    # echo "Opting in to vault..."
+    # cast send "$OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" --private-key "$OPERATOR_PRIVATE_KEY" \
+    # "optIn(address vault)" "$VAULT_CONTRACT_ADDRESS"
 
-    echo "Checking vault opt-in status..."
-    cast call "$OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" \
-    "isOptedIn(address who, address where)(bool)" "$OPERATOR_ADDRESS" "$VAULT_CONTRACT_ADDRESS"
-    echo "Expected output: true"
+    # echo "Checking vault opt-in status..."
+    # cast call "$OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" \
+    # "isOptedIn(address who, address where)(bool)" "$OPERATOR_ADDRESS" "$VAULT_CONTRACT_ADDRESS"
+    # echo "Expected output: true"
 
-    # ============================
-    # 4. Opt-in to Network
-    # ============================
-    echo "Opting in to network..."
-    cast send "$OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" --private-key "$OPERATOR_PRIVATE_KEY" \
-    "optIn(address network)" "$NETWORK_ADDRESS"
+    # # ============================
+    # # 4. Opt-in to Network
+    # # ============================
+    # echo "Opting in to network..."
+    # cast send "$OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" --private-key "$OPERATOR_PRIVATE_KEY" \
+    # "optIn(address network)" "$NETWORK_ADDRESS"
 
-    echo "Checking network opt-in status..."
-    cast call "$OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" \
-    "isOptedIn(address who, address where)(bool)" "$OPERATOR_ADDRESS" "$NETWORK_ADDRESS"
-    echo "Expected output: true"
+    # echo "Checking network opt-in status..."
+    # cast call "$OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" \
+    # "isOptedIn(address who, address where)(bool)" "$OPERATOR_ADDRESS" "$NETWORK_ADDRESS"
+    # echo "Expected output: true"
 
-    # Liveness Related
-    # ============================
-    # 5. Register Tx_Orderer
-    # ============================
-    echo "Registering tx_orderer..."
-    cast send "$LIVENESS_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" --private-key "$SEQUENCER_PRIVATE_KEY" \
-    "registerTxOrderer(string clusterId)" "$CLUSTER_ID"
+    # # Liveness Related
+    # # ============================
+    # # 5. Register Tx_Orderer
+    # # ============================
+    # echo "Registering tx_orderer..."
+    # cast send "$LIVENESS_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" --private-key "$SEQUENCER_PRIVATE_KEY" \
+    # "registerTxOrderer(string clusterId)" "$CLUSTER_ID"
 
-    echo "Checking tx_orderer registration..."
-    cast call "$LIVENESS_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" \
-    "isTxOrdererRegistered(string clusterId, address txOrderer)(bool)" "$CLUSTER_ID" "$SEQUENCER_ADDRESS"
-    echo "Expected output: true"
+    # echo "Checking tx_orderer registration..."
+    # cast call "$LIVENESS_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" \
+    # "isTxOrdererRegistered(string clusterId, address txOrderer)(bool)" "$CLUSTER_ID" "$SEQUENCER_ADDRESS"
+    # echo "Expected output: true"
     
     # ✅ Apply environment variables dynamically at runtime
 
@@ -105,7 +105,11 @@ if [ "$SEQUENCER_MODE" = "init" ]; then
     echo "✅ Environment variables applied successfully."
     ./scripts/execute/02_run_sequencer.sh &
     sleep 5
-    ./scripts/rpc-call/10_initialize.sh
+    ./scripts/rpc-call/11_add_sequencing_info.sh &
+    sleep 5
+    ./scripts/rpc-call/12_add_symbiotic_validation_info.sh &
+    sleep 5
+    ./scripts/rpc-call/13_add_cluster.sh &
 
     tail -f /dev/null
 

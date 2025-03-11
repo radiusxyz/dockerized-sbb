@@ -13,38 +13,41 @@ services:
       - ./seeder-entrypoint.sh:/app/seeder/scripts/seeder-entrypoint.sh
       - seeder_data:/app/seeder/data
     entrypoint: ["/bin/bash", "/app/seeder/scripts/seeder-entrypoint.sh"]
-  # key_generator:
-  #   build:
-  #     context: .
-  #     dockerfile: key_generator.Dockerfile
-  #   container_name: key_generator
-  #   ports:
-  #     - "11001:11001"
-  #     - "11002:11002"
-  #     - "11003:11003"
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ./key_generator-entrypoint.sh:/app/key_generator/scripts/key_generator-entrypoint.sh
-  #     - key_generator_data:/app/key_generator/data
-  #   entrypoint:
-  #     ["/bin/bash", "/app/key_generator/scripts/key_generator-entrypoint.sh"]
-  # tx_orderer:
-  #   build:
-  #     context: .
-  #     dockerfile: tx_orderer.Dockerfile
-  #   container_name: tx_orderer
-  #   ports:
-  #     - "11101:11101"
-  #     - "11102:11102"
-  #     - "11103:11103"
-  #   env_file:
-  #     - .env
-  #   volumes:
-  #     - ./tx_orderer-entrypoint.sh:/app/tx_orderer/scripts/tx_orderer-entrypoint.sh
-  #     - tx_orderer_data:/app/tx_orderer/data
-  #   entrypoint:
-  #     ["/bin/bash", "/app/tx_orderer/scripts/tx_orderer-entrypoint.sh"]
+  key_generator:
+    build:
+      context: .
+      dockerfile: key_generator.Dockerfile
+    container_name: key_generator
+    ports:
+      - "11001:11001"
+      - "11002:11002"
+      - "11003:11003"
+    env_file:
+      - .env
+    volumes:
+      - ./key_generator-entrypoint.sh:/app/key_generator/scripts/key_generator-entrypoint.sh
+      - key_generator_data:/app/key_generator/data
+    entrypoint:
+      ["/bin/bash", "/app/key_generator/scripts/key_generator-entrypoint.sh"]
+  tx_orderer:
+    build:
+      context: .
+      dockerfile: tx_orderer.Dockerfile
+    container_name: tx_orderer
+    ports:
+      - "11101:11101"
+      - "11102:11102"
+      - "11103:11103"
+    env_file:
+      - .env
+    depends_on:
+      - seeder
+      - key_generator
+    volumes:
+      - ./tx_orderer-entrypoint.sh:/app/tx_orderer/scripts/tx_orderer-entrypoint.sh
+      - tx_orderer_data:/app/tx_orderer/data
+    entrypoint:
+      ["/bin/bash", "/app/tx_orderer/scripts/tx_orderer-entrypoint.sh"]
   # secure-rpc-provider:
   #   build:
   #     context: .
