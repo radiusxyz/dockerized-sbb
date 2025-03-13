@@ -1,6 +1,30 @@
 #!/bin/bash
 
-# Load environment variables from .env file
+# Step 1: Check if `cast` is installed
+if ! command -v cast &> /dev/null; then
+    echo "⚠️ Foundry's 'cast' command is not installed. Installing Foundry..."
+    curl -L https://foundry.paradigm.xyz | bash
+    source "$HOME/.bashrc" || source "$HOME/.zshrc"
+    foundryup
+else
+    echo "✅ 'cast' command found."
+fi
+
+# Step 2: Check if `cast` version matches the required nightly version
+REQUIRED_VERSION="cast 0.2.0 (5b7e4cb 2023-12-02T00:23:06.394266000Z)"
+CURRENT_VERSION=$(cast --version)
+
+echo "🔍 Current version..." $CURRENT_VERSION
+ 
+if [[ "$CURRENT_VERSION" != "$REQUIRED_VERSION" ]]; then
+    echo "⚠️ Incorrect Foundry version detected: $CURRENT_VERSION"
+    echo "Updating Foundry to required version: $REQUIRED_VERSION..."
+    foundryup -v "nightly-5b7e4cb3c882b28f3c32ba580de27ce7381f415a"
+else
+    echo "✅ Foundry is already at the required version: $CURRENT_VERSION. Skipping update..."
+fi
+
+# Step 3: Load environment variables from .env file
 if [ -f .env ]; then
     set -o allexport
     source .env
@@ -9,8 +33,6 @@ else
     echo "⚠️ .env file not found! Exiting..."
     exit 1
 fi
-
-
 
 # Function to check a condition and execute a command only if needed
 check_and_execute() {
