@@ -54,23 +54,23 @@ check_and_execute() {
 
 # 1. Register Operator
 check_and_execute \
-    "cast call $OPERATOR_REGISTRY_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL 'isEntity(address who)(bool)' $OPERATOR_ADDRESS" \
+    "cast call $OPERATOR_REGISTRY_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL 'isEntity(address who)(bool)' $OPERATOR_ADDRESS" \
     "true" \
-    "cast send $OPERATOR_REGISTRY_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL --private-key $OPERATOR_PRIVATE_KEY 'registerOperator()'" \
+    "cast send $OPERATOR_REGISTRY_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $OPERATOR_PRIVATE_KEY 'registerOperator()'" \
     "Registering Operator"
 
 # 2. Opt-in to Vault
 check_and_execute \
-    "cast call $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL 'isOptedIn(address who, address where)(bool)' $OPERATOR_ADDRESS $VAULT_CONTRACT_ADDRESS" \
+    "cast call $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL 'isOptedIn(address who, address where)(bool)' $OPERATOR_ADDRESS $VAULT_CONTRACT_ADDRESS" \
     "true" \
-    "cast send $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL --private-key $OPERATOR_PRIVATE_KEY 'optIn(address vault)' $VAULT_CONTRACT_ADDRESS" \
+    "cast send $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $OPERATOR_PRIVATE_KEY 'optIn(address vault)' $VAULT_CONTRACT_ADDRESS" \
     "Opt-in to Vault"
 
 # 3. Opt-in to Network
 check_and_execute \
-    "cast call $OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL 'isOptedIn(address who, address where)(bool)' $OPERATOR_ADDRESS $NETWORK_ADDRESS" \
+    "cast call $OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL 'isOptedIn(address who, address where)(bool)' $OPERATOR_ADDRESS $NETWORK_ADDRESS" \
     "true" \
-    "cast send $OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL --private-key $OPERATOR_PRIVATE_KEY 'optIn(address network)' $NETWORK_ADDRESS" \
+    "cast send $OPERATOR_NETWORK_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $OPERATOR_PRIVATE_KEY 'optIn(address network)' $NETWORK_ADDRESS" \
     "Opt-in to Network"
 
 # 4. Register Tx_Orderer
