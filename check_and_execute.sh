@@ -74,10 +74,10 @@ check_and_execute \
     "Opt-in to Network"
 
 # 4. Register Tx_Orderer
-# check_and_execute \
-#     "cast call $LIVENESS_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL 'isTxOrdererRegistered(string clusterId, address txOrderer)(bool)' $CLUSTER_ID $SEQUENCER_ADDRESS" \
-#     "true" \
-#     "cast send $LIVENESS_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL --private-key $SEQUENCER_PRIVATE_KEY 'registerTxOrderer(string clusterId)' $CLUSTER_ID" \
-#     "Registering Tx_Orderer"
+check_and_execute \
+    "cast call $LIVENESS_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL 'isTxOrdererRegistered(string clusterId, address txOrderer)(bool)' $CLUSTER_ID $SEQUENCER_ADDRESS" \
+    "true" \
+    "cast send $LIVENESS_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL --private-key $SEQUENCER_PRIVATE_KEY 'registerTxOrderer(string clusterId)' $CLUSTER_ID" \
+    "Registering Tx_Orderer"
 
 echo "✅ All necessary steps have been completed."
