@@ -9,7 +9,7 @@ REPO_DIR="symbiotic-middleware-contract"
 BRANCH="feat/renamed"
 
 # Clone the repository and checkout the correct branch
-git clone --branch "$BRANCH" --single-branch "$REPO_URL"
+# git clone --branch "$BRANCH" --single-branch "$REPO_URL"
 cd "$REPO_DIR"
 
 # Paths
@@ -57,16 +57,16 @@ sleep 10
 chmod +x ./utils/gylman.sh
 ./utils/gylman.sh
 
-# Extract variables from final.sh that are not in .env
+# Extract environment variables from final.sh (remove 'export' keyword)
 grep 'export ' ../final.sh | sed 's/export //' > ../final_vars.txt
 
-# Identify new variables
-new_vars=$(grep -v -f "$ENV_FILE" ../final_vars.txt)
+# Prepend final.sh variables to .env
+cat ../final_vars.txt "$ENV_FILE" > ../new_env.txt
 
-# Append new variables to .env
-echo "$new_vars" >> "$ENV_FILE"
+# Remove duplicate lines (keeping the first occurrence)
+awk '!seen[$1]++' FS='=' ../new_env.txt > "$ENV_FILE"
 
 # Clean up
-rm ../final_vars.txt
+rm ../final_vars.txt ../new_env.txt
 
-echo "Deployment completed successfully!"
+echo "Deployment completed successfully, and .env has been updated!"
