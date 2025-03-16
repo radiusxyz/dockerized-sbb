@@ -6,7 +6,7 @@ set -e
 # Define repo details
 REPO_URL="https://github.com/radiusxyz/symbiotic-middleware-contract"
 REPO_DIR="symbiotic-middleware-contract"
-BRANCH="feat/InitialRewardSystem"
+BRANCH="feat/renamed"
 
 # Clone the repository and checkout the correct branch
 git clone --branch "$BRANCH" --single-branch "$REPO_URL"
@@ -46,7 +46,7 @@ make build-contracts
 make deploy-all
 
 # Export state
-./utils/state/export.env > ../final.sh
+./utils/state/export_env.sh > ../final.sh
 source ../final.sh
 
 # Start the service
@@ -54,6 +54,7 @@ make start &
 sleep 10
 
 # Execute blockchain transactions
+chmod +x ./utils/gylman.sh
 ./utils/gylman.sh
 
 # Extract variables from final.sh that are not in .env
