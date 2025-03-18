@@ -9,7 +9,7 @@ REPO_DIR="symbiotic-middleware-contract"
 BRANCH="feat/renamed"
 
 # Clone the repository and checkout the correct branch
-# git clone --branch "$BRANCH" --single-branch "$REPO_URL"
+git clone --branch "$BRANCH" --single-branch "$REPO_URL"
 cd "$REPO_DIR"
 
 # Paths
@@ -46,27 +46,27 @@ make build-contracts
 make deploy-all
 
 # Export state
-./utils/state/export_env.sh > ../final.sh
-source ../final.sh
+./utils/state/export_env.sh > ../exported_env.sh
+source ../exported_env.sh
 
 # Start the service
 make start &
 sleep 10
 
 # Execute blockchain transactions
-chmod +x ./utils/gylman.sh
-./utils/gylman.sh
+chmod +x ./utils/execute_contract_functions.sh
+./utils/execute_contract_functions.sh
 
-# Extract environment variables from final.sh (remove 'export' keyword)
-grep 'export ' ../final.sh | sed 's/export //' > ../final_vars.txt
+# Extract environment variables from exported_env.sh (remove 'export' keyword)
+grep 'export ' ../exported_env.sh | sed 's/export //' > ../temp.txt
 
-# Prepend final.sh variables to .env
-cat ../final_vars.txt "$ENV_FILE" > ../new_env.txt
+# Prepend exported_env.sh variables to .env
+cat ../temp.txt "$ENV_FILE" > ../new_env.txt
 
 # Remove duplicate lines (keeping the first occurrence)
 awk '!seen[$1]++' FS='=' ../new_env.txt > "$ENV_FILE"
 
 # Clean up
-rm ../final_vars.txt ../new_env.txt
+rm ../temp.txt ../new_env.txt
 
 echo "Deployment completed successfully, and .env has been updated!"
