@@ -9,7 +9,7 @@ REPO_DIR="symbiotic-middleware-contract"
 BRANCH="feat/renamed"
 
 # Clone the repository and checkout the correct branch
-git clone --branch "$BRANCH" --single-branch "$REPO_URL"
+# git clone --branch "$BRANCH" --single-branch "$REPO_URL"
 cd "$REPO_DIR"
 
 # Paths
@@ -51,6 +51,14 @@ source ../exported_env.sh
 
 # Start the service
 make start &
+
+# Get the PID of the background process
+SERVICE_PID=$!
+
+# Trap SIGINT (Ctrl+C) to kill the background process before exiting
+trap "echo 'Stopping service...'; kill $SERVICE_PID; exit" SIGINT
+
+# Sleep to allow service to start
 sleep 10
 
 # Execute blockchain transactions
@@ -70,3 +78,6 @@ awk '!seen[$1]++' FS='=' ../new_env.txt > "$ENV_FILE"
 rm ../temp.txt ../new_env.txt
 
 echo "Deployment completed successfully, and .env has been updated!"
+
+# Wait for background process to finish
+wait $SERVICE_PID
