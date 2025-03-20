@@ -7,7 +7,7 @@
 # Base Configurations
 export ROLLUP_ID="asdf"
 export CLUSTER_ID="radius"
-export LIVENESS_RPC_URL="http://127.0.0.1:8545"
+export LIVENESS_RPC_URL="http://192.168.68.54:8545"
 export PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
 export NETWORK_PRIVATE_KEY="0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80"
 export NETWORK_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
