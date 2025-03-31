@@ -2,7 +2,7 @@ FROM rust:1.75 as builder
 
 WORKDIR /app
 
-RUN git clone https://github.com/gylman/seeder-gylman && mv seeder-gylman seeder
+RUN git clone https://github.com/radiusxyz/seeder
 
 WORKDIR /app/seeder
 

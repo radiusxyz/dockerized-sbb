@@ -11,7 +11,7 @@ services:
       - "10002:10002"
     volumes:
       - ./seeder-entrypoint.sh:/app/seeder/scripts/seeder-entrypoint.sh
-      - seeder_data:/app/seeder/data
+      - seeder_data:/app/seeder
     entrypoint: ["/bin/bash", "/app/seeder/scripts/seeder-entrypoint.sh"]
   key_generator:
     build:
