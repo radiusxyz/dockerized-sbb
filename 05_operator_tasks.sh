@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source .operator_env
 # Step 1: Check if `cast` is installed
 if ! command -v cast &> /dev/null; then
     echo "⚠️ Foundry's 'cast' command is not installed. Installing Foundry..."
@@ -24,16 +25,6 @@ else
     echo "✅ Foundry is already at the required version: $CURRENT_VERSION. Skipping update..."
 fi
 
-# Step 3: Load environment variables from .env file
-if [ -f .env ]; then
-    set -o allexport
-    source .env
-    set +o allexport
-else
-    echo "⚠️ .env file not found! Exiting..."
-    exit 1
-fi
-
 # Function to check a condition and execute a command only if needed
 check_and_execute() {
     local check_command=$1
@@ -52,6 +43,9 @@ check_and_execute() {
     fi
 }
 
+echo $OPERATOR_REGISTRY_CONTRACT_ADDRESS
+echo $VALIDATION_RPC_URL
+echo $OPERATOR_ADDRESS
 # 1. Register Operator
 check_and_execute \
     "cast call $OPERATOR_REGISTRY_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL 'isEntity(address who)(bool)' $OPERATOR_ADDRESS" \
@@ -75,9 +69,9 @@ check_and_execute \
 
 # 4. Register Tx_Orderer
 check_and_execute \
-    "cast call $LIVENESS_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL 'isTxOrdererRegistered(string clusterId, address txOrderer)(bool)' $CLUSTER_ID $SEQUENCER_ADDRESS" \
+    "cast call $LIVENESS_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL 'isTxOrdererRegistered(string clusterId, address txOrderer)(bool)' $CLUSTER_ID $TX_ORDERER_ADDRESS" \
     "true" \
-    "cast send $LIVENESS_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL --private-key $SEQUENCER_PRIVATE_KEY 'registerTxOrderer(string clusterId)' $CLUSTER_ID" \
+    "cast send $LIVENESS_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $LIVENESS_RPC_URL --private-key $TX_ORDERER_PRIVATE_KEY 'registerTxOrderer(string clusterId)' $CLUSTER_ID" \
     "Registering Tx_Orderer"
 
 echo "✅ All necessary steps have been completed."

@@ -2,7 +2,7 @@ FROM rust:1.75 as builder
 
 WORKDIR /app
 
-RUN git clone https://github.com/radiusxyz/secure-rpc && mv secure-rpc secure-rpc-provider
+RUN git clone --branch "feat/re-naming" https://github.com/radiusxyz/secure-rpc-provider
 
 WORKDIR /app/secure-rpc-provider
 

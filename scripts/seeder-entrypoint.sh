@@ -32,7 +32,6 @@ replace_env_var "$SEEDER_EXECUTE_ENV_PATH" "SEEDER_INTERNAL_RPC_URL" "$SEEDER_IN
 #######################################
 # 2. Prepare RPC Call env
 #######################################
-
 ensure_env_file "$SEEDER_RPC_CALL_ENV_PATH" "./scripts/rpc-call/env_example.sh"
 replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "SEEDER_INTERNAL_RPC_URL" "$SEEDER_INTERNAL_RPC_URL"
 replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_PLATFORM" "$LIVENESS_PLATFORM"
@@ -49,12 +48,12 @@ echo "All environment files are prepared."
 if [ "$SEEDER_MODE" = "init" ]; then
     echo "🚀 Running Seeder Initialization..."
     ./scripts/execute/01_init_seeder.sh
-
     echo "✅ Environment variables applied successfully."
+
     ./scripts/execute/02_run_seeder.sh &
     
     sleep 5
-    ./scripts/rpc-call/10_initialize.sh
+     ./scripts/rpc-call/10_initialize.sh > /dev/null 2>&1
 
     tail -f /dev/null
 

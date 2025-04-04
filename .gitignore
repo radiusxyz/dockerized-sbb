@@ -1,5 +1,10 @@
 .DS_Store
 
 .env
+.network_env
+.operator_env
+.staker_env
+.vault_env
 
+deployed_info.sh
 symbiotic-middleware-contract
