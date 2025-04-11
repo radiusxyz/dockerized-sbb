@@ -1,7 +1,5 @@
 ## General Overview
 
-![image.png](attachment:dd26d198-09f3-40e4-aed6-cfe221adfd50:image.png)
-
 **dockerized-sbb** repository consists of the following components each of which run in a separate docker container:
 
 - **Seeder**
@@ -477,7 +475,7 @@ This script uses `docker-compose` to manage each container individually, allowin
 
 ```
 
-![image.png](attachment:353d1502-30b1-4f9c-8d25-3599986ed1e2:image.png)
+![image](https://github.com/user-attachments/assets/f9c8e968-dc5c-476b-8aa3-bf789140dd6b)
 
 # More details
 
