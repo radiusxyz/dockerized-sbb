@@ -113,7 +113,7 @@ Developers are responsible for deploying smart contracts, configuring the enviro
 
 ---
 
-### ✅ **Step 0: Copy & Configure Environment Variables**
+### **Step 0: Copy & Configure Environment Variables**
 
 Copy the `.env` file from the `./env_templates` directory into the project root:
 
