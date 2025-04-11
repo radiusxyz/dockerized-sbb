@@ -21,7 +21,7 @@ Operators are only responsible for running the **TX Orderer** service. The proce
 
 ---
 
-### ✅ **Step 0: Copy & Configure Environment Variables**
+### **Step 0: Copy & Configure Environment Variables**
 
 Copy the required environment files from the `./env_templates` directory into the project root:
 
