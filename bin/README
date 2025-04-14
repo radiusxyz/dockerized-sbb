@@ -1,0 +1,4 @@
+seeder: main - commit: c7da5632c248f168ff4eb262877e6e216bd82f08
+key-generator: main - commit: 489d59eeabb653f5957051066abb113121ba8f0b
+secure-rpc: feat/re-naming - commit: 06edf64c6edd69de8e28fb7a40143bffc2a78fcc
+tx_orderer: feat/order-commitment - commit: 3e369fdd165592fd76738dfea464e3ea321e7313

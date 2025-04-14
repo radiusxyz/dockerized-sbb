@@ -4,6 +4,7 @@ set -e  # Exit on error
 
 PROJECT_ROOT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE_PATH="$PROJECT_ROOT_PATH/.env"
+UTIL_FILE_PATH="$PROJECT_ROOT_PATH/util.sh"
 DEPLOYED_INFO_PATH="$PROJECT_ROOT_PATH/deployed_info.sh"
 
 if [ ! -f "$ENV_FILE_PATH" ]; then
@@ -12,6 +13,10 @@ if [ ! -f "$ENV_FILE_PATH" ]; then
 fi
 
 source $ENV_FILE_PATH
+source $UTIL_FILE_PATH
+
+foundry_check_and_build
+jq_check_and_build
 
 #######################################
 # Replace env variables in a target script

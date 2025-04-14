@@ -13,8 +13,8 @@ replace_env_var() {
 }
 
 ensure_env_file() {
-  local target_path=$1
-  local example_path=$2
+  local example_path=$1
+  local target_path=$2
 
   if [[ ! -f "$target_path" ]]; then
     echo "📄 Creating $target_path from example..."
@@ -22,20 +22,21 @@ ensure_env_file() {
   fi
 }
 
-#######################################
-# 1. Prepare Execution env
-######################################
-ensure_env_file "$SECURE_RPC_EXECUTE_ENV_PATH" "./scripts/execute/env_example.sh"
-replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "SECURE_RPC_EXTERNAL_RPC_URL" "$SECURE_RPC_EXTERNAL_RPC_URL"
-replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "ROLLUP_ID" "$ROLLUP_ID"
-replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "ROLLUP_RPC_URL" "$ROLLUP_RPC_URL"
-replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "TX_ORDERER_EXTERNAL_RPC_URL_LIST" "$TX_ORDERER_EXTERNAL_RPC_URL_LIST"
-replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "ENCRYPTED_TRANSACTION_TYPE" "$ENCRYPTED_TRANSACTION_TYPE"
-replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "DISTRIBUTED_KEY_GENERATOR_EXTERNAL_RPC_URL" "$DISTRIBUTED_KEY_GENERATOR_EXTERNAL_RPC_URL"
-
-echo "All environment files are prepared."
-
 if [ "$SECURE_RPC_PROVIDER_MODE" = "init" ]; then
+    #######################################
+    # 1. Prepare Execution env
+    ######################################
+    SECURE_RPC_EXECUTE_ENV_PATH="./scripts/execute/env.sh"
+    ensure_env_file "./scripts/execute/env_example.sh" "$SECURE_RPC_EXECUTE_ENV_PATH"
+    replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "SECURE_RPC_EXTERNAL_RPC_URL" "$SECURE_RPC_EXTERNAL_RPC_URL"
+    replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "ROLLUP_ID" "$ROLLUP_ID"
+    replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "ROLLUP_RPC_URL" "$ROLLUP_RPC_URL"
+    replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "TX_ORDERER_EXTERNAL_RPC_URL_LIST" "$TX_ORDERER_EXTERNAL_RPC_URL_LIST"
+    replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "ENCRYPTED_TRANSACTION_TYPE" "$ENCRYPTED_TRANSACTION_TYPE"
+    replace_env_var "$SECURE_RPC_EXECUTE_ENV_PATH" "DISTRIBUTED_KEY_GENERATOR_EXTERNAL_RPC_URL" "$DISTRIBUTED_KEY_GENERATOR_EXTERNAL_RPC_URL"
+
+    echo "All environment files are prepared."
+
     echo "🚀 Running Secure RPC Provider Initialization..."
     ./scripts/execute/01_init_secure_rpc.sh
 

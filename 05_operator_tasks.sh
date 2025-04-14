@@ -1,29 +1,20 @@
 #!/bin/bash
 
-source .operator_env
-# Step 1: Check if `cast` is installed
-if ! command -v cast &> /dev/null; then
-    echo "⚠️ Foundry's 'cast' command is not installed. Installing Foundry..."
-    curl -L https://foundry.paradigm.xyz | bash
-    source "$HOME/.bashrc" || source "$HOME/.zshrc"
-    foundryup
-else
-    echo "✅ 'cast' command found."
+
+PROJECT_ROOT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE_PATH="$PROJECT_ROOT_PATH/.operator_env"
+UTIL_FILE_PATH="$PROJECT_ROOT_PATH/util.sh"
+
+source $UTIL_FILE_PATH
+
+foundry_check_and_build
+
+if [ ! -f "$ENV_FILE_PATH" ]; then
+  echo "Error: $ENV_FILE_PATH file not found"
+  exit 1
 fi
 
-# Step 2: Check if `cast` version matches the required nightly version
-REQUIRED_VERSION="cast 0.2.0 (5b7e4cb 2023-12-02T00:23:06.394266000Z)"
-CURRENT_VERSION=$(cast --version)
-
-echo "🔍 Current version..." $CURRENT_VERSION
- 
-if [[ "$CURRENT_VERSION" != "$REQUIRED_VERSION" ]]; then
-    echo "⚠️ Incorrect Foundry version detected: $CURRENT_VERSION"
-    echo "Updating Foundry to required version: $REQUIRED_VERSION..."
-    foundryup -v "nightly-5b7e4cb3c882b28f3c32ba580de27ce7381f415a"
-else
-    echo "✅ Foundry is already at the required version: $CURRENT_VERSION. Skipping update..."
-fi
+source $ENV_FILE_PATH
 
 # Function to check a condition and execute a command only if needed
 check_and_execute() {

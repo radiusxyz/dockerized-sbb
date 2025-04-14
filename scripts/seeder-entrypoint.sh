@@ -13,8 +13,8 @@ replace_env_var() {
 }
 
 ensure_env_file() {
-  local target_path=$1
-  local example_path=$2
+  local example_path=$1
+  local target_path=$2
 
   if [[ ! -f "$target_path" ]]; then
     echo "📄 Creating $target_path from example..."
@@ -22,30 +22,32 @@ ensure_env_file() {
   fi
 }
 
-#######################################
-# 1. Prepare Execution env
-#######################################
-ensure_env_file "$SEEDER_EXECUTE_ENV_PATH" "./scripts/execute/env_example.sh"
-replace_env_var "$SEEDER_EXECUTE_ENV_PATH" "SEEDER_EXTERNAL_RPC_URL" "$SEEDER_EXTERNAL_RPC_URL"
-replace_env_var "$SEEDER_EXECUTE_ENV_PATH" "SEEDER_INTERNAL_RPC_URL" "$SEEDER_INTERNAL_RPC_URL"
-
-#######################################
-# 2. Prepare RPC Call env
-#######################################
-ensure_env_file "$SEEDER_RPC_CALL_ENV_PATH" "./scripts/rpc-call/env_example.sh"
-replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "SEEDER_INTERNAL_RPC_URL" "$SEEDER_INTERNAL_RPC_URL"
-replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_PLATFORM" "$LIVENESS_PLATFORM"
-replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_SERVICE_PROVIDER" "$LIVENESS_SERVICE_PROVIDER"
-replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_RPC_URL" "$LIVENESS_RPC_URL"
-replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_WS_URL" "$LIVENESS_WS_URL"
-replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_CONTRACT_ADDRESS" "$LIVENESS_CONTRACT_ADDRESS"
-
-echo "All environment files are prepared."
-
-#######################################
+######################################
 # 3. Run Mode Handling
-#######################################
+######################################
 if [ "$SEEDER_MODE" = "init" ]; then
+    #######################################
+    # 1. Prepare Execution env
+    #######################################
+    SEEDER_EXECUTE_ENV_PATH="./scripts/execute/env.sh"
+    ensure_env_file "./scripts/execute/env_example.sh" "$SEEDER_EXECUTE_ENV_PATH" 
+    replace_env_var "$SEEDER_EXECUTE_ENV_PATH" "SEEDER_EXTERNAL_RPC_URL" "$SEEDER_EXTERNAL_RPC_URL"
+    replace_env_var "$SEEDER_EXECUTE_ENV_PATH" "SEEDER_INTERNAL_RPC_URL" "$SEEDER_INTERNAL_RPC_URL"
+
+    #######################################
+    # 2. Prepare RPC Call env
+    #######################################
+    SEEDER_RPC_CALL_ENV_PATH="./scripts/rpc-call/env.sh" 
+    ensure_env_file "./scripts/rpc-call/env_example.sh" "$SEEDER_RPC_CALL_ENV_PATH"
+    replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "SEEDER_INTERNAL_RPC_URL" "$SEEDER_INTERNAL_RPC_URL"
+    replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_PLATFORM" "$LIVENESS_PLATFORM"
+    replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_SERVICE_PROVIDER" "$LIVENESS_SERVICE_PROVIDER"
+    replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_RPC_URL" "$LIVENESS_RPC_URL"
+    replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_WS_URL" "$LIVENESS_WS_URL"
+    replace_env_var "$SEEDER_RPC_CALL_ENV_PATH" "LIVENESS_CONTRACT_ADDRESS" "$LIVENESS_CONTRACT_ADDRESS"
+
+    echo "All environment files are prepared."
+
     echo "🚀 Running Seeder Initialization..."
     ./scripts/execute/01_init_seeder.sh
     echo "✅ Environment variables applied successfully."
@@ -53,6 +55,7 @@ if [ "$SEEDER_MODE" = "init" ]; then
     ./scripts/execute/02_run_seeder.sh &
     
     sleep 5
+
      ./scripts/rpc-call/10_initialize.sh > /dev/null 2>&1
 
     tail -f /dev/null

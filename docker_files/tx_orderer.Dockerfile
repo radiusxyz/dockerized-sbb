@@ -1,25 +1,12 @@
-FROM rust:1.75 as builder
+FROM ubuntu:22.04
 
 WORKDIR /app
 
-RUN git clone --branch "feat/order-commitment" https://github.com/radiusxyz/tx_orderer
-
-WORKDIR /app/tx_orderer
-
-RUN apt-get update && apt-get install -y git clang llvm-dev libclang-dev cmake pkg-config build-essential libssl-dev curl
-
-RUN curl -L https://foundry.paradigm.xyz | bash && \
-    /bin/bash -c "source ~/.bashrc && foundryup && foundryup -v nightly-5b7e4cb3c882b28f3c32ba580de27ce7381f415a"
-
-RUN cargo build --release
-
-FROM ubuntu:22.04
-
-WORKDIR /app/tx_orderer
-
 RUN apt-get update && apt-get install -y curl git
 
-COPY --from=builder /root/.foundry/bin/cast /usr/local/bin/cast
+RUN git clone --branch "feat/order-commitment" https://github.com/radiusxyz/tx_orderer /app/tx_orderer
 
-COPY --from=builder /app/tx_orderer/scripts /app/tx_orderer/scripts
-COPY --from=builder /app/tx_orderer/target/release/tx_orderer /app/tx_orderer/target/release/tx_orderer
+COPY ./bin/tx_orderer /app/tx_orderer/target/release/tx_orderer
+
+RUN chmod +x /app/tx_orderer/target/release/tx_orderer || true
+RUN find /app/tx_orderer/scripts -type f -name "*.sh" -exec chmod +x {} \; || true

@@ -4,6 +4,11 @@ set -e  # Exit on error
 
 PROJECT_ROOT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE_PATH="$PROJECT_ROOT_PATH/.staker_env"
+UTIL_FILE_PATH="$PROJECT_ROOT_PATH/util.sh"
+
+source $UTIL_FILE_PATH
+
+foundry_check_and_build
 
 if [ ! -f "$ENV_FILE_PATH" ]; then
   echo "Error: $ENV_FILE_PATH file not found"
@@ -59,7 +64,6 @@ case $choice in
 
     cast call $VAULT_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
     "activeSharesOf(address)(uint256)" $STAKER_ADDRESS
-
     ;;
   0)
     echo "Exited"
