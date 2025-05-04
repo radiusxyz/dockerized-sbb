@@ -1,4 +1,5 @@
-seeder: main - commit: c7da5632c248f168ff4eb262877e6e216bd82f08
-key-generator: main - commit: 489d59eeabb653f5957051066abb113121ba8f0b
-secure-rpc: feat/re-naming - commit: 06edf64c6edd69de8e28fb7a40143bffc2a78fcc
-tx_orderer: feat/order-commitment - commit: 3e369fdd165592fd76738dfea464e3ea321e7313
+seeder: main - commit: 20eb14812144373ea026c196ea88d539ffaaef73
+key-generator: main - commit: 18b25100a64268d58cf9bbc3e45d189e27a51a5e
+secure-rpc: feat/re-naming - commit: 169810fdaa543c2da1da789161ff1b497d5b2e55
+tx_orderer: feat/order-commitment - commit: 827fe5df56a06dfa0afb873b1073f592d1e4f29c
+symbiotic-middleware-contract - commit: 2bcc5700414c824085a6ec930179bd1dc38f79dd
