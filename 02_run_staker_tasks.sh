@@ -31,38 +31,32 @@ read -p "-> Please choose number: " choice
 
 case $choice in
   1)
-    echo $TOKEN_CONTRACT_ADDRESS
-    echo $VALIDATION_RPC_URL
-    echo $TOKEN_CONTRACT_OWNER_PRIVATE_KEY
-    echo $STAKER_ADDRESS
-    echo $DEPOSIT_AMOUNT
-
-    cast send $TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $TOKEN_CONTRACT_OWNER_PRIVATE_KEY \
+    cast send $DEFAULT_TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $DEFAULT_TOKEN_CONTRACT_OWNER_PRIVATE_KEY \
     "transfer(address,uint256)" $STAKER_ADDRESS $DEPOSIT_AMOUNT
 
-    cast call $TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
+    cast call $DEFAULT_TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
     "balanceOf(address)(uint256)" $STAKER_ADDRESS
     ;;
   2)
-    cast send $TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $STAKER_PRIVATE_KEY \
-    "approve(address spender, uint256 value)(bool)" $COLLATERAL_CONTRACT_ADDRESS $DEPOSIT_AMOUNT 
+    cast send $DEFAULT_TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $STAKER_PRIVATE_KEY \
+    "approve(address spender, uint256 value)(bool)" $DEFAULT_COLLATERAL_CONTRACT_ADDRESS $DEPOSIT_AMOUNT 
 
-    cast call $TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
-    "allowance(address,address)(uint256)" $STAKER_ADDRESS $COLLATERAL_CONTRACT_ADDRESS
+    cast call $DEFAULT_TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
+    "allowance(address,address)(uint256)" $STAKER_ADDRESS $DEFAULT_COLLATERAL_CONTRACT_ADDRESS
 
-    cast send $COLLATERAL_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $STAKER_PRIVATE_KEY \
+    cast send $DEFAULT_COLLATERAL_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $STAKER_PRIVATE_KEY \
     "deposit(address recipient, uint256 amount)(uint256)" $STAKER_ADDRESS $DEPOSIT_AMOUNT 
 
-    cast call $TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
-    "balanceOf(address)(uint256)" $COLLATERAL_CONTRACT_ADDRESS
+    cast call $DEFAULT_TOKEN_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
+    "balanceOf(address)(uint256)" $DEFAULT_COLLATERAL_CONTRACT_ADDRESS
 
-    cast send $COLLATERAL_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $STAKER_PRIVATE_KEY \
-    "approve(address spender, uint256 value)(bool)" $VAULT_CONTRACT_ADDRESS $DEPOSIT_AMOUNT
+    cast send $DEFAULT_COLLATERAL_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $STAKER_PRIVATE_KEY \
+    "approve(address spender, uint256 value)(bool)" $DEFAULT_VAULT_CONTRACT_ADDRESS $DEPOSIT_AMOUNT
 
-    cast send $VAULT_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $STAKER_PRIVATE_KEY \
+    cast send $DEFAULT_VAULT_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $STAKER_PRIVATE_KEY \
     "deposit(address onBehalfOf, uint256 amount)(uint256 depositedAmount, uint256 mintedShares)" $STAKER_ADDRESS $DEPOSIT_AMOUNT
 
-    cast call $VAULT_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
+    cast call $DEFAULT_VAULT_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
     "activeSharesOf(address)(uint256)" $STAKER_ADDRESS
     ;;
   0)

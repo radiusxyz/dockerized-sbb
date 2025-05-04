@@ -1,6 +1,7 @@
 .DS_Store
 
-.env
+.blockchain_env
+.dev_env
 .network_env
 .operator_env
 .staker_env

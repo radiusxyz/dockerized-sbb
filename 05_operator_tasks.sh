@@ -46,9 +46,9 @@ check_and_execute \
 
 # 2. Opt-in to Vault
 check_and_execute \
-    "cast call $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL 'isOptedIn(address who, address where)(bool)' $OPERATOR_ADDRESS $VAULT_CONTRACT_ADDRESS" \
+    "cast call $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL 'isOptedIn(address who, address where)(bool)' $OPERATOR_ADDRESS $DEFAULT_VAULT_CONTRACT_ADDRESS" \
     "true" \
-    "cast send $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $OPERATOR_PRIVATE_KEY 'optIn(address vault)' $VAULT_CONTRACT_ADDRESS" \
+    "cast send $OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $OPERATOR_PRIVATE_KEY 'optIn(address vault)' $DEFAULT_VAULT_CONTRACT_ADDRESS" \
     "Opt-in to Vault"
 
 # 3. Opt-in to Network

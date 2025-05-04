@@ -3,7 +3,7 @@
 set -e  # Exit on error
 
 PROJECT_ROOT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENV_FILE_PATH="$PROJECT_ROOT_PATH/.env"
+ENV_FILE_PATH="$PROJECT_ROOT_PATH/.blockchain_env"
 UTIL_FILE_PATH="$PROJECT_ROOT_PATH/util.sh"
 DEPLOYED_INFO_PATH="$PROJECT_ROOT_PATH/deployed_info.sh"
 

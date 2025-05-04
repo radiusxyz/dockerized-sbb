@@ -53,7 +53,7 @@ if [ "$TX_ORDERER_MODE" = "init" ]; then
     replace_env_var "$TX_ORDERER_RPC_CALL_ENV_PATH" "LIVENESS_SERVICE_PROVIDER" "$LIVENESS_SERVICE_PROVIDER"
     replace_env_var "$TX_ORDERER_RPC_CALL_ENV_PATH" "LIVENESS_RPC_URL" "$LIVENESS_RPC_URL"
     replace_env_var "$TX_ORDERER_RPC_CALL_ENV_PATH" "LIVENESS_WS_URL" "$LIVENESS_WS_URL"
-    replace_env_var "$TX_ORDERER_RPC_CALL_ENV_PATH" "LIVENESS_SERVICE_MANAGER_CONTRACT_ADDRESS" "$LIVENESS_SERVICE_MANAGER_CONTRACT_ADDRESS"
+    replace_env_var "$TX_ORDERER_RPC_CALL_ENV_PATH" "LIVENESS_SERVICE_MANAGER_CONTRACT_ADDRESS" \""$LIVENESS_SERVICE_MANAGER_CONTRACT_ADDRESS"\"
     replace_env_var "$TX_ORDERER_RPC_CALL_ENV_PATH" "CLUSTER_ID" "$CLUSTER_ID"
 
     replace_env_var "$TX_ORDERER_RPC_CALL_ENV_PATH" "VALIDATION_PLATFORM" "$VALIDATION_PLATFORM"
@@ -76,8 +76,8 @@ if [ "$TX_ORDERER_MODE" = "init" ]; then
     sleep 5
     ./scripts/rpc-call/12_add_symbiotic_validation_info.sh
     
-    # sleep 5
-    # ./scripts/rpc-call/13_add_cluster.sh
+    sleep 5
+    ./scripts/rpc-call/13_add_cluster.sh
 
     tail -f /dev/null
 

@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y curl git
 
 RUN git clone https://github.com/radiusxyz/tx_orderer /app/tx_orderer \
     && cd /app/tx_orderer \
-    && git checkout 827fe5df56a06dfa0afb873b1073f592d1e4f29c
+    && git checkout 8bec878d788ba2c56374f07555d5907b3927a927
 
 COPY ./bin/tx_orderer /app/tx_orderer/target/release/tx_orderer
 

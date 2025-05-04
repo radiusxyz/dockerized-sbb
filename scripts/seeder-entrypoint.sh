@@ -31,8 +31,8 @@ if [ "$SEEDER_MODE" = "init" ]; then
     #######################################
     SEEDER_EXECUTE_ENV_PATH="./scripts/execute/env.sh"
     ensure_env_file "./scripts/execute/env_example.sh" "$SEEDER_EXECUTE_ENV_PATH" 
-    replace_env_var "$SEEDER_EXECUTE_ENV_PATH" "SEEDER_EXTERNAL_RPC_URL" "$SEEDER_EXTERNAL_RPC_URL"
     replace_env_var "$SEEDER_EXECUTE_ENV_PATH" "SEEDER_INTERNAL_RPC_URL" "$SEEDER_INTERNAL_RPC_URL"
+    replace_env_var "$SEEDER_EXECUTE_ENV_PATH" "SEEDER_EXTERNAL_RPC_URL" "$SEEDER_EXTERNAL_RPC_URL"
 
     #######################################
     # 2. Prepare RPC Call env

@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: ./docker_files/seeder.Dockerfile
     env_file:
-      - .env
+      - .dev_env
     ports:
       - "10001:10001"
       - "10002:10002"
@@ -21,7 +21,7 @@ services:
       context: .
       dockerfile: ./docker_files/distributed_key_generator.Dockerfile
     env_file:
-      - .env
+      - .dev_env
     ports:
       - "11001:11001"
       - "11002:11002"
@@ -35,14 +35,13 @@ services:
         "/bin/bash",
         "/app/distributed_key_generator/scripts/distributed_key_generator-entrypoint.sh",
       ]
-
+      
   tx_orderer:
     container_name: tx_orderer
     build:
       context: .
       dockerfile: ./docker_files/tx_orderer.Dockerfile
     env_file:
-      - .env
       - .operator_env
     ports:
       - "11101:11101"
@@ -64,7 +63,7 @@ services:
       context: .
       dockerfile: ./docker_files/secure-rpc-provider.Dockerfile
     env_file:
-      - .env
+      - .dev_env
     ports:
       - "11111:11111"
     working_dir: /app/secure-rpc-provider

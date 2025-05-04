@@ -3,15 +3,6 @@
 set -e
 
 PROJECT_ROOT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ENV_FILE_PATH="$PROJECT_ROOT_PATH/.env"
-
-if [ ! -f "$ENV_FILE_PATH" ]; then
-  echo "Error: $ENV_FILE_PATH file not found"
-  exit 1
-fi
-
-source "$ENV_FILE_PATH"
-
 # Services
 ALL_SERVICES=("seeder" "distributed_key_generator" "tx_orderer" "secure-rpc-provider")
 

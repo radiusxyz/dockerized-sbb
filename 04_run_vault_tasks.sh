@@ -22,14 +22,14 @@ source $ENV_FILE_PATH
 #######################################
 set_network_limit() {
   set +e
-  RESULT=$(cast send "$DELEGATOR_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" --private-key "$VAULT_CONTRACT_OWNER_PRIVATE_KEY" \
+  RESULT=$(cast send "$DEFAULT_DELEGATOR_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" --private-key "$DEFAULT_VAULT_CONTRACT_OWNER_PRIVATE_KEY" \
     "setNetworkLimit(bytes32 subnetwork, uint256 amount)" "$SUBNETWORK" "$NETWORK_LIMIT" 2>&1)
   IS_EXIT=$?
   set -e
 
   if [[ $IS_EXIT -ne 0 ]]; then
     if echo "$RESULT" | grep -q "execution reverted"; then
-      max_network_limit=$(cast call "$DELEGATOR_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" \
+      max_network_limit=$(cast call "$DEFAULT_DELEGATOR_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" \
       "maxNetworkLimit(bytes32 subnetwork)(uint256 maxNetworkLimit)" "$SUBNETWORK" 2>/dev/null)
       
       echo "  MAX_NETWORK_LIMIt: ${max_network_limit} / NETWORK_LIMIT: ${NETWORK_LIMIT}"
@@ -47,7 +47,7 @@ set_network_share() {
   source "$ENV_FILE_PATH" "$EXPORTED_ENV_PATH"
 
   set +e
-  RESULT=$(cast send "$DELEGATOR_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" --private-key "$VAULT_CONTRACT_OWNER_PRIVATE_KEY" \
+  RESULT=$(cast send "$DEFAULT_DELEGATOR_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" --private-key "$DEFAULT_VAULT_CONTRACT_OWNER_PRIVATE_KEY" \
     "setOperatorNetworkShares(bytes32 subnetwork, address operator, uint256 shares)" "$SUBNETWORK" "$OPERATOR_ADDRESS" "$DELEGATE_AMOUNT" 2>&1)
   IS_EXIT=$?
   set -e
@@ -64,7 +64,7 @@ set_network_share() {
     echo "Complete set network share."
   fi
 
-  cast call "$DELEGATOR_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" \
+  cast call "$DEFAULT_DELEGATOR_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" \
     "stake(bytes32 subnetwork, address operator)(uint256)" "$SUBNETWORK" "$OPERATOR_ADDRESS"
 }
 
