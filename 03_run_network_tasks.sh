@@ -104,8 +104,10 @@ register_operator() {
   if [[ "$IS_REGISTERED" == "false" ]]; then
     echo "❌ Skipping registerOperator...(not opt-in)"
   else
-    operators=$(cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
-    "getCurrentOperatorInfos()((address, address, (address, uint256)[], uint256)[])")
+    REGISTRY_CONTRACT_ADDRESS=$(cast call "$VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" "registry()(address)")
+    
+    operators=$(cast call $REGISTRY_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL \
+    "getCurrentOperatorInfos()((address, address, (address, uint256)[])[])")
 
     if echo "$operators" | grep -q "$OPERATOR_ADDRESS"; then
         echo "The operator is already registered"
@@ -119,7 +121,9 @@ register_operator() {
 }
 
 register_token() {
-  IS_REGISTERED=$(cast call "$VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" "isActiveToken(address)(bool)" "$TOKEN_CONTRACT_ADDRESS")
+  REGISTRY_CONTRACT_ADDRESS=$(cast call "$VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" "registry()(address)")
+
+  IS_REGISTERED=$(cast call "$REGISTRY_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" "isActiveToken(address)(bool)" "$TOKEN_CONTRACT_ADDRESS")
   if [[ "$IS_REGISTERED" == "false" ]]; then
     echo "Registering token..."
     RESULT=$(cast send "$VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" --private-key "$NETWORK_PRIVATE_KEY" \
@@ -140,13 +144,14 @@ register_token() {
 }
 
 register_vault() {
+  REGISTRY_CONTRACT_ADDRESS=$(cast call "$VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" "registry()(address)")
 
-  IS_REGISTERED=$(cast call "$VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" "isActiveVault(address vault)(bool)" "$VAULT_CONTRACT_ADDRESS")
+  IS_REGISTERED=$(cast call "$REGISTRY_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" "isActiveVault(address vault)(bool)" "$VAULT_CONTRACT_ADDRESS")
 
   if [[ "$IS_REGISTERED" == "false" ]]; then
     echo "Registering vault..."
     RESULT=$(cast send "$VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS" --rpc-url "$VALIDATION_RPC_URL" --private-key "$NETWORK_PRIVATE_KEY" \
-      "registerVault(address vault, address stakerRewards, address operatorRewards)" "$VAULT_CONTRACT_ADDRESS" "$STAKER_REWARD_CONTRACT_ADDRESS" "$OPERATOR_REWARD_CONTRACT_ADDRESS" 2>&1)
+      "registerVault(address vault, address stakerRewards, address operatorRewards, address slasher)" "$VAULT_CONTRACT_ADDRESS" "$STAKER_REWARD_CONTRACT_ADDRESS" "$OPERATOR_REWARD_CONTRACT_ADDRESS" "$SLASHER_CONTRACT_ADDRESS" 2>&1)
     IS_EXIT=$?
     set -e
 

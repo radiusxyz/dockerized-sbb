@@ -4,8 +4,8 @@
 
 RPC_URL="http://35.189.33.95:8545"
 
-VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS="0x0E801D84Fa97b50751Dbf25036d067dCf18858bF"
-LIVENESS_SERVICE_MANAGER_CONTRACT_ADDRESS="0x4826533B4897376654Bb4d4AD88B7faFD0C98528"
+VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS="0xCD8a1C3ba11CF5ECfa6267617243239504a98d90"
+LIVENESS_SERVICE_MANAGER_CONTRACT_ADDRESS="0x5eb3Bc0a489C5A8288765d2336659EbCA68FCd00"
 CLUSTER_ID="radius_cluster"
 
 NETWORK_ADDRESS="0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
@@ -17,7 +17,7 @@ OPERATOR_VAULT_OPT_IN_SERVICE_CONTRACT_ADDRESS="0x2279B7A0a67DB372996a5FaB50D91e
 
 # VAULT Info (name|vault address|delegator address)
 vault_info_list=(
-  "VAULT_1|0x4ce789c1774c852FA9E248E8EcE4E4e936E92E73|0x04950543b6417703a81B401046F54C53E2819434"
+  "VAULT_1|0xf574883756dd45E4C6b58162e3329212fb4f3342|0x03B70Ade1412A540423c9aD943Bc18A867b48d1A"
 )
 
 # TOKEN Info (name|address)
@@ -81,8 +81,12 @@ check_team() {
   done
 
   echo "6. Check register operator in middleware contract"
-  cast_output=$(cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+  REGISTRY_CONTRACT_ADDRESS=$(cast call "$VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS" --rpc-url "$RPC_URL" "registry()(address)")
+
+  cast_output=$(cast call $REGISTRY_CONTRACT_ADDRESS --rpc-url $RPC_URL \
     "getCurrentOperatorInfos()((address, address, (address, uint256)[])[])")
+
+  echo "cast_output" $cast_output
 
   if echo "$cast_output" | grep -q "$operator_address"; then
     echo "   * It exists in the middleware contract."
@@ -91,7 +95,7 @@ check_team() {
     for token_entry in "${tokens[@]}"; do
       IFS="|" read -r token_name token_address <<< "$token_entry"
 
-      staking_amount=$(cast call $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $RPC_URL \
+      staking_amount=$(cast call $REGISTRY_CONTRACT_ADDRESS --rpc-url $RPC_URL \
         "getCurrentOperatorTokenStake(address operator, address token)(uint256)" \
         $operator_address $token_address)
 
