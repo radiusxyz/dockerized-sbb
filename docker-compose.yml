@@ -35,7 +35,6 @@ services:
         "/bin/bash",
         "/app/distributed_key_generator/scripts/distributed_key_generator-entrypoint.sh",
       ]
-      
   tx_orderer:
     container_name: tx_orderer
     build:
@@ -48,9 +47,6 @@ services:
       - "11102:11102"
       - "11103:11103"
     working_dir: /app/tx_orderer
-    depends_on:
-      - seeder
-      - distributed_key_generator
     volumes:
       - ./scripts/tx_orderer-entrypoint.sh:/app/tx_orderer/scripts/tx_orderer-entrypoint.sh
       - tx_orderer_data:/app/tx_orderer/data
@@ -66,9 +62,8 @@ services:
       - .dev_env
     ports:
       - "11111:11111"
+      - "9111:9111"
     working_dir: /app/secure-rpc-provider
-    depends_on:
-      - distributed_key_generator
     volumes:
       - ./scripts/secure-rpc-provider-entrypoint.sh:/app/secure-rpc-provider/scripts/secure-rpc-provider-entrypoint.sh
       - secure-rpc-provider_data:/app/secure-rpc-provider/data
