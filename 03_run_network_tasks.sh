@@ -112,8 +112,7 @@ register_operator() {
     if echo "$operators" | grep -q "$OPERATOR_ADDRESS"; then
         echo "The operator is already registered"
     else
-        $(cast send $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $NETWORK_PRIVATE_KEY \
-        "registerOperator(address operatorAddress, address txOrdererAddress)" $OPERATOR_ADDRESS $TX_ORDERER_ADDRESS)
+        RESULT=$(cast send $VALIDATION_SERVICE_MANAGER_CONTRACT_ADDRESS --rpc-url $VALIDATION_RPC_URL --private-key $NETWORK_PRIVATE_KEY "registerOperator(address operatorAddress, address txOrdererAddress)" $OPERATOR_ADDRESS $TX_ORDERER_ADDRESS 2>&1)
 
         echo "Completed registering the operator"
     fi    
